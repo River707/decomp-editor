@@ -29,7 +29,7 @@ namespace DecompEditor.ProjectData.OldFormat {
             TrainerParty current = null;
             var pkmDeserializer = new PokemonDeserializer((pkm) => {
               if (pkm.HeldItem == null)
-                pkm.HeldItem = Project.Instance.Items.getFromId("ITEM_NONE");
+                pkm.HeldItem = Project.Instance.Items.getFromId("NONE");
               if (pkm.Moves == null)
                 pkm.Moves = new ObservableCollection<Move>(Enumerable.Repeat(Project.Instance.Moves.getFromId("MOVE_NONE"), 4));
               current.Pokemon.Add(pkm);
@@ -52,7 +52,7 @@ namespace DecompEditor.ProjectData.OldFormat {
             addString("trainerName", (name) => current.Name = name);
             addEnumList("items", (items) => {
               if (items.Length == 0)
-                current.Items = new ObservableCollection<Item>(Enumerable.Repeat(Project.Instance.Items.getFromId("ITEM_NONE"), 4));
+                current.Items = new ObservableCollection<Item>(Enumerable.Repeat(Project.Instance.Items.getFromId("NONE"), 4));
               else
                 current.Items = new ObservableCollection<Item>(items.Select(item => Project.Instance.Items.getFromId(item)));
             });

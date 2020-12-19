@@ -32,7 +32,7 @@ namespace DecompEditor {
 
     public static Pokemon createDefault() {
       return new Pokemon {
-        HeldItem = Project.Instance.Items.getFromId("ITEM_NONE"),
+        HeldItem = Project.Instance.Items.getFromId("NONE"),
         Moves = new ObservableCollection<Move>(Enumerable.Repeat(Project.Instance.Moves.getFromId("MOVE_NONE"), 4)),
         Species = Project.Instance.Species.getFromId("SPECIES_NONE")
       };
@@ -352,7 +352,7 @@ namespace DecompEditor {
           Iv = pokemon.Iv;
           Level = pokemon.Level;
           Species = pokemon.Species.Identifier;
-          HeldItem = partyHasItems ? pokemon.HeldItem.Identifier : null;
+          HeldItem = partyHasItems ? "ITEM_" + pokemon.HeldItem.Identifier : null;
           Moves = partyHasMoves ? pokemon.Moves.Select(move => move.Identifier).ToArray() : null;
         }
         public Pokemon deserialize() {
@@ -368,7 +368,7 @@ namespace DecompEditor {
         public int Iv { get; set; } = 0;
         public int Level { get; set; } = 5;
         public string Species { get; set; } = "SPECIES_NONE";
-        public string HeldItem { get; set; } = "ITEM_NONE";
+        public string HeldItem { get; set; } = "NONE";
         public string[] Moves { get; set; } = Enumerable.Repeat("MOVE_NONE", 4).ToArray();
       }
       public class JSONTrainerParty {
@@ -384,12 +384,12 @@ namespace DecompEditor {
           EncounterMusic = trainer.EncounterMusic.Identifier;
           Pic = trainer.Pic.Identifier;
           Name = trainer.Name;
-          Items = trainer.Items.Any(item => item.Identifier != "ITEM_NONE") ? trainer.Items.Select(item => item.Identifier).ToArray() : null;
+          Items = trainer.Items.Any(item => item.Identifier != "NONE") ? trainer.Items.Select(item => "ITEM_" + item.Identifier).ToArray() : null;
           DoubleBattle = trainer.DoubleBattle ? new bool?(true) : null;
           IsMale = trainer.IsMale ? new bool?(true) : null;
           AIFlags = trainer.AIFlags.OrderBy(flag => flag.Order).Select(flag => flag.Identifier).ToArray();
 
-          bool partyHasItems = trainer.Party.Pokemon.Any(pokemon => pokemon.HeldItem.Identifier != "ITEM_NONE");
+          bool partyHasItems = trainer.Party.Pokemon.Any(pokemon => pokemon.HeldItem.Identifier != "NONE");
           bool partyHasMoves = trainer.Party.Pokemon.Any(pokemon => pokemon.Moves.Any(move => move.Identifier != "MOVE_NONE"));
           Party = new JSONTrainerParty() {
             HasItems = partyHasItems ? new bool?(true) : null,
@@ -420,7 +420,7 @@ namespace DecompEditor {
         public string EncounterMusic { get; set; }
         public string Pic { get; set; }
         public string Name { get; set; }
-        public string[] Items { get; set; } = Enumerable.Repeat("ITEM_NONE", 4).ToArray();
+        public string[] Items { get; set; } = Enumerable.Repeat("NONE", 4).ToArray();
         public bool? DoubleBattle { get; set; } = false;
         public bool? IsMale { get; set; } = false;
         public string[] AIFlags { get; set; }
