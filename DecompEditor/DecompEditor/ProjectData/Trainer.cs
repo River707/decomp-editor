@@ -327,7 +327,7 @@ namespace DecompEditor {
       public JSONDatabase() { }
       public JSONDatabase(TrainerDatabase database) {
         Classes = database.Classes.ToArray();
-        FrontPics = database.FrontPics.ToArray();
+        FrontPics = database.FrontPics.Select(pic => new JSONTrainerPic(pic)).ToArray();
         Trainers = database.Trainers.Select(trainer => new JSONTrainer(trainer)).ToArray();
       }
 
@@ -339,8 +339,9 @@ namespace DecompEditor {
         }
         Dictionary<string, TrainerPic> idToPic = new Dictionary<string, TrainerPic>();
         foreach (var pic in FrontPics) {
-          database.FrontPics.Add(pic);
-          idToPic.Add(pic.Identifier, pic);
+          TrainerPic trainerPic = pic.deserialize();
+          database.FrontPics.Add(trainerPic);
+          idToPic.Add(pic.Identifier, trainerPic);
         }
         foreach (var trainer in Trainers)
           database.Trainers.Add(trainer.deserialize(idToClass, idToPic));
@@ -426,9 +427,37 @@ namespace DecompEditor {
         public string[] AIFlags { get; set; }
         public JSONTrainerParty Party { get; set; }
       }
+      public class JSONTrainerPic {
+        public JSONTrainerPic() { }
+        public JSONTrainerPic(TrainerPic pic) {
+          Path = pic.Path;
+          PalettePath = pic.PalettePath;
+          Identifier = pic.Identifier;
+          CoordSize = pic.CoordSize;
+          CoordYOffset = pic.CoordYOffset;
+          UncompressedSize = pic.UncompressedSize;
+        }
+        public TrainerPic deserialize() {
+          return new TrainerPic() {
+            FullPath = System.IO.Path.Combine(Project.Instance.ProjectDir, "graphics/trainers/front_pics/" + Path + ".png"),
+            Path = Path,
+            PalettePath = PalettePath,
+            Identifier = Identifier,
+            CoordSize = CoordSize,
+            CoordYOffset = CoordYOffset,
+            UncompressedSize = UncompressedSize
+          };
+        }
 
+        public string Path { get; set; }
+        public string PalettePath { get; set; }
+        public string Identifier { get; set; }
+        public int CoordSize { get; set; }
+        public int CoordYOffset { get; set; }
+        public int UncompressedSize { get; set; }
+      }
       public TrainerClass[] Classes { get; set; }
-      public TrainerPic[] FrontPics { get; set; }
+      public JSONTrainerPic[] FrontPics { get; set; }
       public JSONTrainer[] Trainers { get; set; }
     }
 
