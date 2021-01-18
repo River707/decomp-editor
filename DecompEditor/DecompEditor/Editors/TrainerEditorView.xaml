@@ -25,7 +25,7 @@
                         <Label Content="Music:" Height="26" Canvas.Left="146" Canvas.Top="88"/>
                         <Label Content="Class:" Height="26" Canvas.Left="146" Canvas.Top="60"/>
                         <TextBox Text="{Binding Name, UpdateSourceTrigger=PropertyChanged}" TextWrapping="NoWrap" Width="120" Canvas.Left="50" Canvas.Top="10" ToolTip="The display name of this trainer."/>
-                        <TextBox Text="{Binding Identifier, UpdateSourceTrigger=PropertyChanged}" TextWrapping="NoWrap" Width="120" Canvas.Left="50" Canvas.Top="35" ToolTip="The C identifier of this trainer."/>
+                        <TextBox Text="{Binding Identifier, UpdateSourceTrigger=PropertyChanged}" TextWrapping="NoWrap" Width="120" Canvas.Left="50" Canvas.Top="35" ToolTip="The C identifier of this trainer." CharacterCasing="Upper"/>
                         <Image x:Name="trainerPic" Source="{Binding Pic.FullPath, Mode=OneWay, Converter={StaticResource ImageConverter}}" Height="98" Width="121" Canvas.Left="6" Canvas.Top="62"/>
                         <ComboBox Name="picList" SelectedValue="{Binding Pic}" ItemsSource="{Binding ViewModel.TrainerPics, ElementName=MainEditor}"
                                   Width="120" Canvas.Left="6" Canvas.Top="170" ToolTip="The front picture used for this trainer."

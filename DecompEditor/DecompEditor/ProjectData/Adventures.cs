@@ -496,6 +496,10 @@ namespace DecompEditor.ProjectData {
                 if (condition is AdventureTaskTaskCondition taskCondition)
                   taskCondition.Task = idToTask[taskConditionToId[taskCondition]];
               }
+              foreach (var condition in task.FailureConditions) {
+                if (condition is AdventureTaskTaskCondition taskCondition)
+                  taskCondition.Task = idToTask[taskConditionToId[taskCondition]];
+              }
             }
           }
         }

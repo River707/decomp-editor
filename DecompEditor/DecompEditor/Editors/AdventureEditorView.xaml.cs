@@ -8,6 +8,7 @@ using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 using System.Windows.Data;
 using System.Windows.Input;
+using System.Windows.Media;
 
 namespace DecompEditor.Editors {
   /// <summary>
@@ -74,11 +75,14 @@ namespace DecompEditor.Editors {
       if (dgSrc == null || origIndexObj == null || (int)origIndexObj == newRowIndex)
         return;
       if (sender == taskMenu) {
-        ViewModel.CurrentAdventure.Tasks.Move((int)origIndexObj, newGridRow.GetIndex());
+        if (newRowIndex < ViewModel.CurrentAdventure.Tasks.Count)
+          ViewModel.CurrentAdventure.Tasks.Move((int)origIndexObj, newRowIndex);
       } else if (sender == preconditionMenu) {
-        ViewModel.CurrentTask.PreConditions.Move((int)origIndexObj, newGridRow.GetIndex());
+        if (newRowIndex < ViewModel.CurrentTask.PreConditions.Count)
+          ViewModel.CurrentTask.PreConditions.Move((int)origIndexObj, newRowIndex);
       } else if (sender == failureconditionMenu) {
-        ViewModel.CurrentTask.FailureConditions.Move((int)origIndexObj, newGridRow.GetIndex());
+        if (newRowIndex < ViewModel.CurrentTask.FailureConditions.Count)
+          ViewModel.CurrentTask.FailureConditions.Move((int)origIndexObj, newRowIndex);
       }
     }
 
@@ -155,6 +159,17 @@ namespace DecompEditor.Editors {
 
     private void addAdventureButton_Click(object sender, RoutedEventArgs e) {
       adventureList.SelectedItem = Project.Instance.Adventures.addNewAdventure();
+    }
+
+    private void preconditionMenu_SelectedCellsChanged(object sender, SelectedCellsChangedEventArgs e) {
+      var grid = sender as DataGrid;
+      if (grid.SelectedIndex == grid.Items.Count - 1) {
+        var element = grid.ItemContainerGenerator.ContainerFromIndex(grid.Items.Count - 1);
+        ComboBox newItemCombo = DialogUtils.FindVisualChild<ComboBox>(element);
+        newItemCombo.Focus();
+        newItemCombo.IsDropDownOpen = true;
+        grid.SelectedIndex = -1;
+      }
     }
   }
   public class CellTemplateSelector : DataTemplateSelector {

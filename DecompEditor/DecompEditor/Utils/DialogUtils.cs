@@ -14,6 +14,20 @@ namespace DecompEditor.Utils {
         return parentAsT;
       return FindVisualParent<T>(parent);
     }
+    /// Try to find the visual parent of the specified type.
+    internal static T FindVisualChild<T>(this DependencyObject parentElement) where T : DependencyObject {
+      int count = VisualTreeHelper.GetChildrenCount(parentElement);
+      for (int i = 0; i < count; i++) {
+        DependencyObject child = VisualTreeHelper.GetChild(parentElement, i);
+        IInputElement inputElement = child as IInputElement;
+        if (null != inputElement && inputElement is T childAsT)
+          return childAsT;
+        child = FindVisualChild<T>(child);
+        if (child != null)
+          return child as T;
+      }
+      return null;
+    }
   }
   public class ImageConverter : IValueConverter {
     public object Convert(object value, Type targetType,

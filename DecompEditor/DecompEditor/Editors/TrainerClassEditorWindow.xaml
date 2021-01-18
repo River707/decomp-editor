@@ -24,7 +24,7 @@
                 <TextBlock Text="ID:" Canvas.Left="16" Canvas.Top="10"/>
                 <TextBlock Text="Name:" Canvas.Left="16" Canvas.Top="37"/>
                 <TextBlock Text="Money Factor:" Canvas.Left="16" Canvas.Top="64"/>
-                <TextBox Text="{Binding CurrentClass.Identifier, UpdateSourceTrigger=PropertyChanged}" TextWrapping="NoWrap" Width="190" Canvas.Left="60" Canvas.Top="9" ToolTip="The C identifier of the class."/>
+                <TextBox Text="{Binding CurrentClass.Identifier, UpdateSourceTrigger=PropertyChanged}" TextWrapping="NoWrap" Width="190" Canvas.Left="60" Canvas.Top="9" ToolTip="The C identifier of the class." CharacterCasing="Upper"/>
                 <TextBox Name="className" Text="{Binding CurrentClass.Name, UpdateSourceTrigger=PropertyChanged}"
                          TextWrapping="NoWrap" Width="190" Canvas.Left="60" Canvas.Top="37" ToolTip="The display name of the class."/>
                 <xctk:IntegerUpDown Value="{Binding CurrentClass.MoneyFactor}" Minimum="0" Maximum="100" Canvas.Left="102" Canvas.Top="62"
