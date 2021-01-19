@@ -134,7 +134,6 @@ namespace DecompEditor.ProjectData.OldFormat {
               database.addFrontPic(trainerPic = new TrainerPic { Identifier = cppVar });
               idToPic.Add(cppVar, trainerPic);
             }
-            trainerPic.PalettePath = Path.ChangeExtension(fileName, null).Remove(0, "graphics/trainers/palettes/".Length);
           }));
           deserializer.deserializeFile(fileDeserializer, "src", "data", "graphics", "trainers.h");
         }

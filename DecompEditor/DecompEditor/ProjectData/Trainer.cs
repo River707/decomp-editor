@@ -188,10 +188,6 @@ namespace DecompEditor {
     /// </summary>
     public string Path { get => path; set => Set(ref path, value); }
     /// <summary>
-    /// The path of the palette used for the picture.
-    /// </summary>
-    public string PalettePath { get => palettePath; set => Set(ref palettePath, value); }
-    /// <summary>
     /// The C identifier of the picture.
     /// </summary>
     public string Identifier {
@@ -431,7 +427,6 @@ namespace DecompEditor {
         public JSONTrainerPic() { }
         public JSONTrainerPic(TrainerPic pic) {
           Path = pic.Path;
-          PalettePath = pic.PalettePath;
           Identifier = pic.Identifier;
           CoordSize = pic.CoordSize;
           CoordYOffset = pic.CoordYOffset;
@@ -441,7 +436,6 @@ namespace DecompEditor {
           return new TrainerPic() {
             FullPath = System.IO.Path.Combine(Project.Instance.ProjectDir, "graphics/trainers/front_pics/" + Path + ".png"),
             Path = Path,
-            PalettePath = PalettePath,
             Identifier = Identifier,
             CoordSize = CoordSize,
             CoordYOffset = CoordYOffset,
@@ -450,7 +444,6 @@ namespace DecompEditor {
         }
 
         public string Path { get; set; }
-        public string PalettePath { get; set; }
         public string Identifier { get; set; }
         public int CoordSize { get; set; }
         public int CoordYOffset { get; set; }
@@ -492,22 +485,11 @@ namespace DecompEditor {
           File.Copy(pic.FullPath, fullPrettyPath, true);
           pic.FullPath = normalizedPath;
 
-          // Generate a new palette file.
-          IList<Color> palette = FileUtils.loadBitmapImage(normalizedPath).Palette.Colors;
-          string normalizePalPath = Path.Combine(projectDir, "graphics/trainers/palettes", pic.PalettePath + ".pal");
-          using (var palWriter = new StreamWriter(normalizePalPath, false)) {
-            palWriter.WriteLine("JASC-PAL");
-            palWriter.WriteLine("0100");
-            palWriter.WriteLine(palette.Count);
-            foreach (Color color in palette)
-              palWriter.WriteLine("{0} {1} {2}", color.R, color.G, color.B);
-          }
-
           // Delete any existing bpp/pal files to force a rebuild.
           File.Delete(Path.ChangeExtension(normalizedPath, ".4bpp"));
           File.Delete(Path.ChangeExtension(normalizedPath, ".4bpp.lz"));
-          File.Delete(Path.ChangeExtension(normalizePalPath, ".gbapal"));
-          File.Delete(Path.ChangeExtension(normalizePalPath, ".gbapal.lz"));
+          File.Delete(Path.ChangeExtension(normalizedPath, ".gbapal"));
+          File.Delete(Path.ChangeExtension(normalizedPath, ".gbapal.lz"));
         }
       }
     }

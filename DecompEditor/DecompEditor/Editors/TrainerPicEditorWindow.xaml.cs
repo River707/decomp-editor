@@ -37,7 +37,6 @@ namespace DecompEditor.Editors {
       System.Drawing.Bitmap image = FileUtils.loadBitmap(path);
       var newPic = new TrainerPic() {
         Identifier = identifier,
-        PalettePath = identifier,
         Path = identifier,
         FullPath = path,
         UncompressedSize = image.Width * image.Height

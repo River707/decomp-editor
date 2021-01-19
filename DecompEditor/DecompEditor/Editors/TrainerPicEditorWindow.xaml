@@ -7,11 +7,11 @@
         xmlns:local="clr-namespace:DecompEditor.Editors" xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
         mc:Ignorable="d"
         DataContext="{Binding TrainerPicEditor, Source={StaticResource ViewModelLocator}}" 
-        Title="Trainer PicTable Editor" Height="450" Width="336">
+        Title="Trainer PicTable Editor" Height="390" Width="336">
     <Window.Resources>
         <utils:ImageConverter x:Key="ImageConverter"/>
     </Window.Resources>
-    <Canvas HorizontalAlignment="Left" Width="800">
+    <Canvas HorizontalAlignment="Left" Width="800" Margin="0,0,0,66">
         <ComboBox Name="picList" SelectedItem="{Binding CurrentPic}" ItemsSource="{Binding TrainerPics}"
                   Width="120" Canvas.Left="90" Canvas.Top="134" ToolTip="The sprite picture being edited."
                   DisplayMemberPath="Identifier"/>
@@ -20,24 +20,21 @@
                 <ImageBrush ImageSource="/Editors/baseline_add_black_18dp.png"/>
             </Button.Background>
         </Button>
-        <GroupBox IsEnabled="{Binding PicIsSelected}" Header="Properties" Canvas.Left="28" Canvas.Top="161" Height="195" Width="272">
-            <Canvas DataContext="{Binding CurrentPic}">
+        <GroupBox IsEnabled="{Binding PicIsSelected}" Header="Properties" Canvas.Left="28" Canvas.Top="161" Height="158" Width="272">
+            <Canvas DataContext="{Binding CurrentPic}" Margin="0,0,0,32">
                 <TextBlock Text="Name:" Canvas.Left="10" Canvas.Top="10"/>
                 <TextBox Text="{Binding Identifier, UpdateSourceTrigger=PropertyChanged}"
                          TextWrapping="NoWrap" Width="190" Canvas.Left="60" Canvas.Top="9" ToolTip="The C identifier of the picture."/>
                 <TextBlock Text="Path:" Canvas.Left="10" Canvas.Top="38"/>
                 <TextBox Text="{Binding Path, UpdateSourceTrigger=PropertyChanged}"
                          TextWrapping="NoWrap" Width="190" Canvas.Left="60" Canvas.Top="37" ToolTip="The relative path within the project directory that the image lives."/>
-                <TextBlock Text="Pal Path:" Canvas.Left="10" Canvas.Top="68"/>
-                <TextBox Text="{Binding PalettePath, UpdateSourceTrigger=PropertyChanged}"
-                         TextWrapping="NoWrap" Width="190" Canvas.Left="60" Canvas.Top="67" ToolTip="The relative path within the project directory that the palette lives."/>
-                <TextBlock Text="Size:" Canvas.Left="31" Canvas.Top="101"/>
-                <xctk:IntegerUpDown Value="{Binding CoordSize}" Minimum="0" Maximum="100" Canvas.Left="60" Canvas.Top="101"
+                <TextBlock Text="Size:" Canvas.Left="31" Canvas.Top="71"/>
+                <xctk:IntegerUpDown Value="{Binding CoordSize}" Minimum="0" Maximum="100" Canvas.Left="60" Canvas.Top="71"
                                     Width="53" ToolTip="The coordinate size when displayed."/>
-                <TextBlock Text="Y Offset:" Canvas.Left="129" Canvas.Top="101"/>
-                <xctk:IntegerUpDown Value="{Binding CoordYOffset}" Minimum="0" Maximum="100" Canvas.Left="179" Canvas.Top="101"
+                <TextBlock Text="Y Offset:" Canvas.Left="129" Canvas.Top="71"/>
+                <xctk:IntegerUpDown Value="{Binding CoordYOffset}" Minimum="0" Maximum="100" Canvas.Left="179" Canvas.Top="71"
                     Width="53" ToolTip="The Y coordinate offset when displayed."/>
-                <Button Name="uploadNewPicButton" Click="uploadNewPicButton_Click"  Content="Upload New Image" Canvas.Left="72" Canvas.Top="138" Width="116"
+                <Button Name="uploadNewPicButton" Click="uploadNewPicButton_Click"  Content="Upload New Image" Canvas.Left="72" Canvas.Top="108" Width="116"
                         ToolTip="Upload a new image. (Replaces the existing image)"/>
             </Canvas>
         </GroupBox>
