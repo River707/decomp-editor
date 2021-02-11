@@ -165,6 +165,9 @@ namespace DecompEditor.Editors {
       var grid = sender as DataGrid;
       if (grid.SelectedIndex == grid.Items.Count - 1) {
         var element = grid.ItemContainerGenerator.ContainerFromIndex(grid.Items.Count - 1);
+        if (element == null)
+          return;
+
         ComboBox newItemCombo = DialogUtils.FindVisualChild<ComboBox>(element);
         newItemCombo.Focus();
         newItemCombo.IsDropDownOpen = true;
