@@ -37,7 +37,7 @@
                         <Label Content="Width:" Height="26" Canvas.Left="10" Canvas.Top="174"/>
                         <xctk:IntegerUpDown ValueChanged="spriteFrame_ValueChanged" Name="spriteWidth" Value="{Binding Width}" Minimum="8" Maximum="256" Canvas.Left="55" Canvas.Top="177" Width="60" Increment="8" ToolTip="The width of the object in pixels."/>
                         <Label Content="Height:" Height="26" Canvas.Left="126" Canvas.Top="174"/>
-                        <xctk:IntegerUpDown ValueChanged="spriteFrame_ValueChanged" Value="{Binding Height}" Minimum="8" Maximum="256" Canvas.Left="174" Canvas.Top="177" Width="60" Increment="8" ToolTip="The height of the object in pixels."/>
+                        <xctk:IntegerUpDown ValueChanged="spriteFrame_ValueChanged" Name="spriteHeight" Value="{Binding Height}" Minimum="8" Maximum="256" Canvas.Left="174" Canvas.Top="177" Width="60" Increment="8" ToolTip="The height of the object in pixels."/>
                         <ComboBox x:Name="paletteList" SelectedValue="{Binding Palette}" ItemsSource="{Binding ViewModel.SpritePalettes, ElementName=MainEditor}" 
                                   DisplayMemberPath="Identifier" Width="169" Canvas.Left="85" Canvas.Top="119" ToolTip="The palette to use for the sprite image."/>
                         <ComboBox x:Name="animList" ItemsSource="{Binding ViewModel.AnimTables, ElementName=MainEditor, Mode=OneWay}" 

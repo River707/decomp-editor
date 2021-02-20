@@ -64,8 +64,9 @@ namespace DecompEditor.Editors {
         return;
 
       EventObject.Frame lastValidFrame = frames[Math.Min(curIndex - 1, frames.Count - 1)];
-      int maxFrame = FileUtils.getImageWidth(lastValidFrame.Pic.FullPath);
-      maxFrame /= ViewModel.CurrentObject.Width;
+      KeyValuePair<int, int> imageDimensions = FileUtils.getImageDimensions(lastValidFrame.Pic.FullPath);
+      bool isXBased = imageDimensions.Key != ViewModel.CurrentObject.Width;
+      int maxFrame = isXBased ? (imageDimensions.Key / ViewModel.CurrentObject.Width) : (imageDimensions.Value / ViewModel.CurrentObject.Height);
       for (int i = 0, e = neededFrames; i < e; ++i) {
         frames.Add(new EventObject.Frame() {
           Pic = lastValidFrame.Pic,
@@ -82,7 +83,7 @@ namespace DecompEditor.Editors {
     }
 
     private void handleFrameChange() {
-      if (!IsInitialized || ViewModel.CurrentObject == null) {
+      if (!IsInitialized || ViewModel.CurrentObject == null || spriteWidth.Value == null || spriteHeight.Value == null) {
         overworldPic.Source = null;
         return;
       }
@@ -105,8 +106,13 @@ namespace DecompEditor.Editors {
       currentObject.Height = Math.Min(currentObject.Height, fileBitmap.PixelHeight);
 
       // Set max for framecount.
-      spriteFrame.Maximum = ((fileBitmap.PixelWidth / 8) / (spriteWidth.Value / 8)) - 1;
+      bool isXBased = fileBitmap.PixelWidth != spriteWidth.Value;
+      if (isXBased)
+        spriteFrame.Maximum =  ((fileBitmap.PixelWidth / 8) / (spriteWidth.Value / 8)) - 1;
+      else
+        spriteFrame.Maximum = ((fileBitmap.PixelHeight / 8) / (spriteHeight.Value / 8)) - 1;
       currentFrame.Index = Math.Min(currentFrame.Index, (int)spriteFrame.Maximum);
+      currentFrame.Index = Math.Max(currentFrame.Index, 0);
 
       // Check to see if the width/height of the object is the same as the image.
       if (currentObject.Width == fileBitmap.PixelWidth &&
@@ -118,7 +124,7 @@ namespace DecompEditor.Editors {
 
       // Otherwise, slice the image to get the specific frame.
       overworldPic.Source = new CroppedBitmap(fileBitmap, new Int32Rect(
-        currentObject.Width * currentFrame.Index, /*y=*/0, currentObject.Width,
+        (isXBased ? currentObject.Width : 0) * currentFrame.Index, /*y=*/(isXBased ? 0 : currentObject.Height) * currentFrame.Index, currentObject.Width,
         currentObject.Height));
       spriteFrame.IsEnabled = true;
     }

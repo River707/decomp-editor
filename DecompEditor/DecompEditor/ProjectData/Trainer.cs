@@ -170,7 +170,6 @@ namespace DecompEditor {
   public class TrainerPic : ObservableObject {
     private string fullPath;
     private string path;
-    private string palettePath;
     private string identifier;
     private int coordSize = 8;
     private int coordYOffset = 1;

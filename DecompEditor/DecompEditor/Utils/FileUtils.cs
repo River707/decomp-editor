@@ -62,9 +62,10 @@ namespace DecompEditor.Utils {
       }
       return img;
     }
-    public static int getImageWidth(string path) {
+    public static KeyValuePair<int, int> getImageDimensions(string path) {
       // TODO: We really shouldn't have to load the image here.
-      return loadBitmapImage(path).PixelWidth;
+      var image = loadBitmapImage(path);
+      return new KeyValuePair<int, int>(image.PixelWidth, image.PixelHeight);
     }
     public static bool uploadImage(out string path, string initialDir) {
       var openFileDialog = new OpenFileDialog {
