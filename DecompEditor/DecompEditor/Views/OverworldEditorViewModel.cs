@@ -31,11 +31,6 @@ namespace DecompEditor.Views {
     /// <summary>
     /// The set of sprite pics within the project.
     /// </summary>
-    public List<EventObjectPalette> SpritePalettes => Project.Instance.EventObjects.Palettes;
-
-    /// <summary>
-    /// The set of sprite pics within the project.
-    /// </summary>
     public ObservableCollection<EventObjectPic> SpritePics => Project.Instance.EventObjects.Pics;
 
     /// <summary>

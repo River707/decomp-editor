@@ -17,14 +17,10 @@ namespace DecompEditor {
   /// </summary>
   public class EventObject : ObservableObject {
     private string identifier;
-    private EventObjectPalette palette;
-    private string reflectionPalette;
     private int width;
     private int height;
-    private int paletteSlot;
     private string shadowSize;
     private bool inanimate;
-    private bool enableReflectionPaletteLoad;
     private string tracks;
     private EventObjectAnimTable animations;
     private string affineAnimations;
@@ -64,14 +60,6 @@ namespace DecompEditor {
       }
     }
     /// <summary>
-    /// The palette used by the object.
-    /// </summary>
-    public EventObjectPalette Palette { get => palette; set => SetAndTrack(ref palette, value); }
-    /// <summary>
-    /// The reflection palette of the object if used.
-    /// </summary>
-    public string ReflectionPalette { get => reflectionPalette; set => Set(ref reflectionPalette, value); }
-    /// <summary>
     /// The pixel width of the object.
     /// </summary>
     public int Width { get => width; set => Set(ref width, value); }
@@ -80,10 +68,6 @@ namespace DecompEditor {
     /// </summary>
     public int Height { get => height; set => Set(ref height, value); }
     /// <summary>
-    /// The palette slot of the object if used.
-    /// </summary>
-    public int PaletteSlot { get => paletteSlot; set => Set(ref paletteSlot, value); }
-    /// <summary>
     /// The shadow size of the object.
     /// </summary>
     public string ShadowSize { get => shadowSize; set => Set(ref shadowSize, value); }
@@ -91,10 +75,6 @@ namespace DecompEditor {
     /// Whether the object is animate or not.
     /// </summary>
     public bool Inanimate { get => inanimate; set => Set(ref inanimate, value); }
-    /// <summary>
-    /// Whether reflection palette loading should be enabled.
-    /// </summary>
-    public bool EnableReflectionPaletteLoad { get => enableReflectionPaletteLoad; set => Set(ref enableReflectionPaletteLoad, value); }
     /// <summary>
     /// The type of tracks left by the object.
     /// </summary>
@@ -126,29 +106,6 @@ namespace DecompEditor {
     /// A pretty name to use for the animation table.
     /// </summary>
     public string PrettyName { get; set; }
-  }
-  /// <summary>
-  /// This class represents an event object palette.
-  /// </summary>
-  public class EventObjectPalette {
-    /// <summary>
-    /// The palette instance used if the sprite generates its palette from its pic table.
-    /// </summary>
-    public static EventObjectPalette GenerateFromFileInst = new EventObjectPalette() {
-      Identifier = "<Generate From Image>",
-      FilePath = string.Empty
-    };
-
-    /// <summary>
-    /// The C identifier of the palette.
-    /// </summary>
-    public string Identifier { get; set; }
-    /// <summary>
-    /// The file path of the palette.
-    /// </summary>
-    public string FilePath { get; set; }
-
-    public override string ToString() => Identifier;
   }
   /// <summary>
   /// This class represents a specific event object picture.
@@ -183,7 +140,6 @@ namespace DecompEditor {
   }
   public class EventObjectDatabase : DatabaseBase {
     ObservableCollection<EventObjectPic> pics;
-    readonly OrderedDictionary<string, EventObjectPalette> varToPalette = new OrderedDictionary<string, EventObjectPalette>();
     readonly List<EventObjectAnimTable> animTables = new List<EventObjectAnimTable>();
     private ObservableCollection<EventObject> objects;
 
@@ -201,11 +157,6 @@ namespace DecompEditor {
     /// Returns the animation tables defined within the project.
     /// </summary>
     public IEnumerable<EventObjectAnimTable> AnimTables => animTables;
-
-    /// <summary>
-    /// Returns the palettes defined within the project.
-    /// </summary>
-    public List<EventObjectPalette> Palettes => varToPalette.Values.Concat(Enumerable.Repeat(EventObjectPalette.GenerateFromFileInst, 1)).ToList();
 
     /// <summary>
     /// Returns the eveent object pictures defined within the project.
@@ -236,7 +187,6 @@ namespace DecompEditor {
       Pics.Clear();
       ShadowSizes.Clear();
       TrackTypes.Clear();
-      varToPalette.Clear();
     }
 
     /// <summary>
@@ -262,44 +212,12 @@ namespace DecompEditor {
     }
 
     /// <summary>
-    /// Returns true if the project needs to upgrade its event object format.
-    /// </summary>
-    /// <returns></returns>
-    public override bool needsUpgrade() {
-      // If the json file exists, this project has the new format.
-      return !File.Exists(Path.Combine(Project.Instance.ProjectDir, "src", "data", "object_events", "event_objects.json"));
-    }
-
-    /// <summary>
-    /// Upgrades the event object format of the project.
-    /// </summary>
-    /// <param name="deserializer"></param>
-    /// <param name="serializer"></param>
-    protected override void upgrade(ProjectDeserializer deserializer, ProjectSerializer serializer) {
-      // Load the tracks and shadow sizes.
-      Dictionary<string, EventObjectAnimTable> varToAnimTable = new Dictionary<string, EventObjectAnimTable>();
-      Deserializer.loadAnimTables(deserializer, animTables, varToAnimTable);
-      Deserializer.loadTracksAndShadowSizes(deserializer, ShadowSizes, TrackTypes);
-
-      // Load and convert the event object storage format.
-      var converter = new ProjectData.OldFormat.EventObjects.Converter(varToAnimTable, pics, varToPalette);
-      converter.convert(deserializer, Objects);
-
-      // Serialize the new format.
-      serialize(serializer);
-    }
-
-    /// <summary>
     /// A simple JSON compatible representation for serializing event object data.
     /// </summary>
     public class JSONDatabase {
       public JSONDatabase() { }
       public JSONDatabase(EventObjectDatabase database) {
         EventObjects = database.Objects.Select(evtObject => new JSONEventObject(evtObject)).ToArray();
-        Palettes = database.varToPalette.Values.Select(palette => new JSONEventObjectPalette() {
-          Identifier = palette.Identifier,
-          Path = palette.FilePath,
-        }).ToArray();
         Pics = database.Pics.Select(pic => new JSONEventObjectPic() {
           Identifier = pic.Identifier,
           Path = pic.Path
@@ -307,12 +225,6 @@ namespace DecompEditor {
       }
 
       public void deserializeInto(EventObjectDatabase database, Dictionary<string, EventObjectAnimTable> varToAnimTable) {
-        foreach (var palette in Palettes) {
-          database.varToPalette.Add(palette.Identifier, new EventObjectPalette() {
-            Identifier = palette.Identifier,
-            FilePath = palette.Path
-          });
-        }
         Dictionary<string, EventObjectPic> varToPic = new Dictionary<string, EventObjectPic>();
         foreach (var pic in Pics) {
           database.Pics.Add(new EventObjectPic() {
@@ -323,16 +235,11 @@ namespace DecompEditor {
           varToPic.Add(pic.Identifier, database.Pics[^1]);
         }
         foreach (var obj in EventObjects)
-          database.Objects.Add(obj.deserialize(varToAnimTable, database.varToPalette, varToPic));
+          database.Objects.Add(obj.deserialize(varToAnimTable, varToPic));
       }
 
       public class JSONEventObjectPic {
         public JSONEventObjectPic() { }
-        public string Identifier { get; set; }
-        public string Path { get; set; }
-      }
-      public class JSONEventObjectPalette {
-        public JSONEventObjectPalette() { }
         public string Identifier { get; set; }
         public string Path { get; set; }
       }
@@ -353,16 +260,10 @@ namespace DecompEditor {
         public JSONEventObject() { }
         public JSONEventObject(EventObject obj) {
           Identifier = obj.Identifier;
-          if (obj.Palette != EventObjectPalette.GenerateFromFileInst)
-            Palette = obj.Palette.Identifier;
-          ReflectionPalette = getOrNullClass(ReflectionPalette, obj.ReflectionPalette);
-
           Width = obj.Width;
           Height = obj.Height;
-          PaletteSlot = getOrNullValue((int)PaletteSlot, obj.PaletteSlot);
           ShadowSize = getOrNullClass(ShadowSize, obj.ShadowSize);
           Inanimate = getOrNullValue((bool)Inanimate, obj.Inanimate);
-          EnableReflectionPaletteLoad = getOrNullValue((bool)EnableReflectionPaletteLoad, obj.EnableReflectionPaletteLoad);
           Tracks = getOrNullClass(Tracks, obj.Tracks);
           Animations = obj.Animations.Identifier;
           AffineAnimations = getOrNullClass(AffineAnimations, obj.AffineAnimations);
@@ -383,18 +284,13 @@ namespace DecompEditor {
         }
 
         public EventObject deserialize(Dictionary<string, EventObjectAnimTable> varToAnimTable,
-                                       OrderedDictionary<string, EventObjectPalette> varToPalette,
                                        Dictionary<string, EventObjectPic> varToPic) {
           EventObject obj = new EventObject() {
             Identifier = Identifier,
-            Palette = Palette == null ? EventObjectPalette.GenerateFromFileInst : varToPalette[Palette],
-            ReflectionPalette = ReflectionPalette,
             Width = Width,
             Height = Height,
-            PaletteSlot = (int)PaletteSlot,
             ShadowSize = ShadowSize,
             Inanimate = (bool)Inanimate,
-            EnableReflectionPaletteLoad = (bool)EnableReflectionPaletteLoad,
             Tracks = Tracks,
             Animations = varToAnimTable[Animations],
             AffineAnimations = AffineAnimations
@@ -422,21 +318,16 @@ namespace DecompEditor {
         T getOrNullClass<T>(T value, T newValue) where T : class => EqualityComparer<T>.Default.Equals(value, newValue) ? null : newValue;
 
         public string Identifier { get; set; }
-        public string Palette { get; set; }
-        public string ReflectionPalette { get; set; } = "OBJ_EVENT_PAL_TAG_NONE";
         public int Width { get; set; }
         public int Height { get; set; }
-        public int? PaletteSlot { get; set; } = 0;
         public string ShadowSize { get; set; } = "M";
         public bool? Inanimate { get; set; } = false;
-        public bool? EnableReflectionPaletteLoad { get; set; } = false;
         public string Tracks { get; set; } = "FOOT";
         public string Animations { get; set; }
         public string AffineAnimations { get; set; } = "gDummySpriteAffineAnimTable";
         public List<JSONFrame> Frames { get; set; } = new List<JSONFrame>();
       }
       public JSONEventObject[] EventObjects { get; set; }
-      public JSONEventObjectPalette[] Palettes { get; set; }
       public JSONEventObjectPic[] Pics { get; set; }
     }
 

@@ -32,17 +32,13 @@
                         <xctk:IntegerUpDown Name="spriteFrame" Value="{Binding ViewModel.CurrentFrame.Index, ElementName=MainEditor}" 
                                             Minimum="0" Maximum="100" Canvas.Left="225" Canvas.Top="67" Width="60"
                                             ValueChanged="spriteFrame_ValueChanged" ToolTip="The frame within the sprite image to use for the current animation index."/>
-                        <Label Content="Palette:" Height="26" Canvas.Left="10" Canvas.Top="117"/>
                         <Label Content="Animations:" Height="26" Canvas.Left="10" Canvas.Top="143"/>
                         <Label Content="Width:" Height="26" Canvas.Left="10" Canvas.Top="174"/>
                         <xctk:IntegerUpDown ValueChanged="spriteFrame_ValueChanged" Name="spriteWidth" Value="{Binding Width}" Minimum="8" Maximum="256" Canvas.Left="55" Canvas.Top="177" Width="60" Increment="8" ToolTip="The width of the object in pixels."/>
                         <Label Content="Height:" Height="26" Canvas.Left="126" Canvas.Top="174"/>
                         <xctk:IntegerUpDown ValueChanged="spriteFrame_ValueChanged" Name="spriteHeight" Value="{Binding Height}" Minimum="8" Maximum="256" Canvas.Left="174" Canvas.Top="177" Width="60" Increment="8" ToolTip="The height of the object in pixels."/>
-                        <ComboBox x:Name="paletteList" SelectedValue="{Binding Palette}" ItemsSource="{Binding ViewModel.SpritePalettes, ElementName=MainEditor}" 
-                                  DisplayMemberPath="Identifier" Width="169" Canvas.Left="85" Canvas.Top="119" ToolTip="The palette to use for the sprite image."/>
                         <ComboBox x:Name="animList" ItemsSource="{Binding ViewModel.AnimTables, ElementName=MainEditor, Mode=OneWay}" 
                                   SelectedValue="{Binding Animations}" DisplayMemberPath="PrettyName" Width="169" Canvas.Left="85" Canvas.Top="145" ToolTip="The animation to use for this object."/>
-                        <CheckBox Content="Reflection Palette" IsChecked="{Binding EnableReflectionPaletteLoad}" Canvas.Left="260" Canvas.Top="123" ToolTip="Whether the reflection palette is loaded or not."/>
                         <CheckBox Content="In-Animate" IsChecked="{Binding Inanimate}" Canvas.Left="260" Canvas.Top="148" ToolTip="If this sprite object is not animated."/>
                         <Button x:Name="removeIndexButtom" Click="removeIndexButtom_Click" Canvas.Left="346" Canvas.Top="13" Width="22" Height="20" ToolTip="Remove the current index and all following indices.">
                             <Button.Background>
@@ -64,8 +60,6 @@
                                   Width="185" Canvas.Left="85" Canvas.Top="63" Background="#FFE5E5E5" ToolTip="The type of tracks this object leaves behind."/>
                         <Label Content="Affine Anims:" Height="26" Canvas.Left="4" Canvas.Top="89"/>
                         <TextBox Text="{Binding AffineAnimations, UpdateSourceTrigger=PropertyChanged}" TextWrapping="NoWrap" Width="185" Canvas.Left="85" Canvas.Top="91" Height="21" ToolTip="The affine animation table for this object."/>
-                        <Label Content="Palette Slot:" Height="26" Canvas.Left="3" Canvas.Top="117"/>
-                        <xctk:IntegerUpDown Value="{Binding PaletteSlot}" Maximum="16" Canvas.Left="85" Canvas.Top="120" Width="60" ToolTip="The slot of the palette within the game. (Unnecessary with dynamic overworld palettes!!)"/>
                     </Canvas>
                 </GroupBox>
             </Canvas>

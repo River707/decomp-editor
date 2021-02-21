@@ -295,29 +295,6 @@ namespace DecompEditor {
     protected override void serialize(ProjectSerializer serializer)
       => Serializer.serialize(serializer, this);
 
-    /// <summary>
-    /// Returns true if the project needs to upgrade its trainer format.
-    /// </summary>
-    /// <returns></returns>
-    public override bool needsUpgrade() {
-      // If the json file exists, this project has the new format.
-      return !File.Exists(Path.Combine(Project.Instance.ProjectDir, "src", "data", "trainers.json"));
-    }
-
-    /// <summary>
-    /// Upgrades the event object format of the project.
-    /// </summary>
-    /// <param name="deserializer"></param>
-    /// <param name="serializer"></param>
-    protected override void upgrade(ProjectDeserializer deserializer, ProjectSerializer serializer) {
-      // Load and convert the trainer storage format.
-      var converter = new ProjectData.OldFormat.Trainers.Converter();
-      converter.convert(deserializer, this);
-
-      // Serialize the new format.
-      serialize(serializer);
-    }
-
     public class JSONDatabase {
       public JSONDatabase() { }
       public JSONDatabase(TrainerDatabase database) {

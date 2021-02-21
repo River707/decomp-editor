@@ -26,8 +26,6 @@ namespace DecompEditor.Editors {
         objectList.Items.SortDescriptions.Add(identifierSortDesc);
         objectList.Items.Filter = obj => (obj as EventObject).Frames.Count != 0;
         objectList.Items.IsLiveSorting = true;
-        var palListView = (ListCollectionView)CollectionViewSource.GetDefaultView(paletteList.ItemsSource);
-        palListView.CustomSort = Comparer<EventObjectPalette>.Create((lhs, rhs) => lhs.Identifier.CompareToNatural(rhs.Identifier));
         spriteList.Items.SortDescriptions.Add(identifierSortDesc);
         spriteList.Items.IsLiveSorting = true;
         removeIndexButtom.IsEnabled = ViewModel.AnimTableIndex != 0;
