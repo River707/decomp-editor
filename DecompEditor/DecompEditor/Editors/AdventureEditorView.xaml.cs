@@ -18,6 +18,24 @@ namespace DecompEditor.Editors {
     public AdventureEditorView() {
       InitializeComponent();
     }
+    public DelegateCommand<object> InsertDescriptionLocTag => new DelegateCommand<object>(new Action<object>((arg) => {
+      TextBox focusedTextBox = Keyboard.FocusedElement as TextBox;
+      if (focusedTextBox == null || focusedTextBox.SelectionLength == 0)
+        return;
+      int selectionStart = focusedTextBox.SelectionStart;
+      focusedTextBox.Text = focusedTextBox.Text.Insert(selectionStart + focusedTextBox.SelectionLength, "{/LOC}");
+      focusedTextBox.Text = focusedTextBox.Text.Insert(selectionStart, "{LOC}");
+      focusedTextBox.CaretIndex = selectionStart + 6;
+    }));
+    public DelegateCommand<object> InsertDescriptionNameTag => new DelegateCommand<object>(new Action<object>((arg) => {
+      TextBox focusedTextBox = Keyboard.FocusedElement as TextBox;
+      if (focusedTextBox == null || focusedTextBox.SelectionLength == 0)
+        return;
+      int selectionStart = focusedTextBox.SelectionStart;
+      focusedTextBox.Text = focusedTextBox.Text.Insert(selectionStart + focusedTextBox.SelectionLength, "{/NAME}");
+      focusedTextBox.Text = focusedTextBox.Text.Insert(selectionStart, "{NAME}");
+      focusedTextBox.CaretIndex = selectionStart + 6;
+    }));
 
     public AdventureEditorViewModel ViewModel => DataContext as AdventureEditorViewModel;
 

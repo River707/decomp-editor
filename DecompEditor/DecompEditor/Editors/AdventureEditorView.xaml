@@ -73,19 +73,34 @@
                                     <TextBox Canvas.Left="10" Canvas.Top="77" Name="tbMultiLine"
                                      Text="{Binding InProgressDescription, UpdateSourceTrigger=PropertyChanged}" TextWrapping="Wrap" AcceptsReturn="True"
                                      VerticalScrollBarVisibility="Visible" Height="73"
-                                     ToolTip="The description of this task when it is in progress." Margin="10,0,10,0"/>
+                                     ToolTip="The description of this task when it is in progress." Margin="10,0,10,0">
+                                        <TextBox.InputBindings>
+                                            <KeyBinding Command="{Binding InsertDescriptionLocTag, ElementName=MainEditor}" Key="L" Modifiers="Ctrl"/>
+                                            <KeyBinding Command="{Binding InsertDescriptionNameTag, ElementName=MainEditor}" Key="N" Modifiers="Ctrl"/>
+                                        </TextBox.InputBindings>
+                                    </TextBox>
                                 </GroupBox>
                                 <GroupBox Header="Failure Description" Canvas.Left="2" Canvas.Top="149" Height="125" Width="320">
                                     <TextBox Canvas.Left="10" Canvas.Top="77" x:Name="tbMultiLine1"
                                      Text="{Binding FailureDescription, UpdateSourceTrigger=PropertyChanged}" TextWrapping="Wrap" AcceptsReturn="True" 
                                      VerticalScrollBarVisibility="Visible" Height="73"
-                                     ToolTip="The description of this task when it is failed." Margin="10,0,10,0"/>
+                                     ToolTip="The description of this task when it is failed." Margin="10,0,10,0">
+                                        <TextBox.InputBindings>
+                                            <KeyBinding Command="{Binding InsertDescriptionLocTag, ElementName=MainEditor}" Key="L" Modifiers="Ctrl"/>
+                                            <KeyBinding Command="{Binding InsertDescriptionNameTag, ElementName=MainEditor}" Key="N" Modifiers="Ctrl"/>
+                                        </TextBox.InputBindings>
+                                    </TextBox>
                                 </GroupBox>
                                 <GroupBox Header="Completed Description" Canvas.Left="2" Canvas.Top="293" Height="125" Width="320">
                                     <TextBox Canvas.Left="10" Canvas.Top="77" x:Name="tbMultiLine2"
                                      Text="{Binding CompletedDescription, UpdateSourceTrigger=PropertyChanged}" TextWrapping="Wrap" AcceptsReturn="True" 
                                      VerticalScrollBarVisibility="Visible" Height="73"
-                                     ToolTip="The description of this task when it is completed." Margin="10,0,10,0"/>
+                                     ToolTip="The description of this task when it is completed." Margin="10,0,10,0">
+                                        <TextBox.InputBindings>
+                                            <KeyBinding Command="{Binding InsertDescriptionLocTag, ElementName=MainEditor}" Key="L" Modifiers="Ctrl"/>
+                                            <KeyBinding Command="{Binding InsertDescriptionNameTag, ElementName=MainEditor}" Key="N" Modifiers="Ctrl"/>
+                                        </TextBox.InputBindings>
+                                    </TextBox>
                                 </GroupBox>
                             </Canvas>
                         </TabItem>
