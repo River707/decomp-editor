@@ -21,7 +21,7 @@ namespace DecompEditor {
     private int importance;
     private int unk19;
     private string pocket;
-    private int type;
+    private string type;
     private string fieldUseFunction;
     private int battleUsage;
     private string battleUseFunction;
@@ -67,7 +67,7 @@ namespace DecompEditor {
     /// <summary>
     /// The type of the item.
     /// </summary>
-    public int Type { get => type; set => Set(ref type, value); }
+    public string Type { get => type; set => Set(ref type, value); }
     /// <summary>
     /// The field use function of the item.
     /// </summary>
@@ -182,7 +182,7 @@ namespace DecompEditor {
         public int Importance { get; set; } = 0;
         public int Unk19 { get; set; } = 0;
         public string Pocket { get; set; }
-        public int Type { get; set; }
+        public string Type { get; set; } = "";
         public string FieldUseFunction { get; set; } = null;
         public int BattleUsage { get; set; } = 0;
         public string BattleUseFunction { get; set; } = "";
