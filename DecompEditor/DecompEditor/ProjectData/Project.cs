@@ -20,6 +20,7 @@ namespace DecompEditor {
     internal PokemonSpeciesDatabase Species { get; } = new PokemonSpeciesDatabase();
     internal TrainerEncounterMusicDatabase TrainerEncounterMusic { get; } = new TrainerEncounterMusicDatabase();
     internal TrainerDatabase Trainers { get; } = new TrainerDatabase();
+    internal WildEncounterDatabase WildEncounters { get; } = new WildEncounterDatabase();
     internal string ProjectDir { get => projectDir; private set => projectDir = FileUtils.normalizePath(value); }
 
     internal bool IsDirty => databases.Any(db => db.IsDirty);
@@ -43,7 +44,7 @@ namespace DecompEditor {
 
     private Project() {
       registerDatabases(Adventures, BattleAI, EventObjects, Items, Moves, Species,
-                        TrainerEncounterMusic, Trainers);
+                        TrainerEncounterMusic, Trainers, WildEncounters);
     }
     void registerDatabases(params DatabaseBase[] databases) => this.databases.AddRange(databases);
 

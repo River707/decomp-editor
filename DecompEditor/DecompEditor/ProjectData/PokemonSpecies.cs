@@ -1,5 +1,6 @@
 ﻿using DecompEditor.ParserUtils;
 using System.Collections.Generic;
+using System.IO;
 using Truncon.Collections;
 
 namespace DecompEditor {
@@ -15,6 +16,11 @@ namespace DecompEditor {
     /// The name of the species.
     /// </summary>
     public string Name { get; set; }
+
+    /// <summary>
+    /// The full file path of the front picture.
+    /// </summary>
+    public string FullFrontPicPath => Path.Combine(Project.Instance.ProjectDir, "graphics", "pokemon", Name, "front.png");
   }
   public class PokemonSpeciesDatabase : DatabaseBase {
     readonly OrderedDictionary<string, PokemonSpecies> enumToSpecies = new OrderedDictionary<string, PokemonSpecies>();

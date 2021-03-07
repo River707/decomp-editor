@@ -39,7 +39,7 @@ namespace DecompEditor {
     }
   }
   /// <summary>
-  /// The part of a trainer defined within the project.
+  /// The party of a trainer defined within the project.
   /// </summary>
   public class TrainerParty : ObservableObject {
     private ObservableCollection<Pokemon> pokemon;

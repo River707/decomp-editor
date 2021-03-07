@@ -159,7 +159,7 @@ namespace DecompEditor {
     public IEnumerable<EventObjectAnimTable> AnimTables => animTables;
 
     /// <summary>
-    /// Returns the eveent object pictures defined within the project.
+    /// Returns the event object pictures defined within the project.
     /// </summary>
     public ObservableCollection<EventObjectPic> Pics { get => pics; set => SetAndTrackItemUpdates(ref pics, value, this); }
 

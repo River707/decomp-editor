@@ -1,0 +1,180 @@
+﻿<UserControl x:Class="DecompEditor.Editors.WildEncounterEditorView"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+      xmlns:utils="clr-namespace:DecompEditor.Utils"
+      xmlns:local="clr-namespace:DecompEditor.Editors"
+      xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
+      d:DesignHeight="450" d:DesignWidth="800"
+      mc:Ignorable="d"
+      DataContext="{Binding WildEncounterEditor, Source={StaticResource ViewModelLocator}}"
+      Name="MainEditor">
+    <UserControl.Resources>
+        <utils:ImageConverter x:Key="ImageConverter"/>
+    </UserControl.Resources>
+    <Grid Margin="0,0,0,17">
+        <DockPanel LastChildFill="True" Margin="0,0,0,-14" HorizontalAlignment="Stretch">
+            <ListView x:Name="mapList" ItemsSource="{Binding WildEncounters}" SelectionChanged="mapList_SelectionChanged"
+                      DisplayMemberPath="MapName" HorizontalAlignment="Left" MinWidth="50">
+                <ListView.GroupStyle>
+                    <GroupStyle>
+                        <GroupStyle.ContainerStyle>
+                            <Style TargetType="{x:Type GroupItem}">
+                                <Setter Property="Template">
+                                    <Setter.Value>
+                                        <ControlTemplate>
+                                            <Expander IsExpanded="False">
+                                                <Expander.Header>
+                                                    <StackPanel Orientation="Horizontal">
+                                                        <TextBlock Text="{Binding Name}" />
+                                                    </StackPanel>
+                                                </Expander.Header>
+                                                <ItemsPresenter />
+                                            </Expander>
+                                        </ControlTemplate>
+                                    </Setter.Value>
+                                </Setter>
+                            </Style>
+                        </GroupStyle.ContainerStyle>
+                    </GroupStyle>
+                </ListView.GroupStyle>
+            </ListView>
+            <TabControl x:Name="habitatTabControl" IsEnabled="{Binding MapIsSelected}" ItemsSource="{Binding CurrentMap.Habitats}"
+                        SelectedItem="{Binding ViewModel.CurrentHabitat, ElementName=MainEditor}" PreviewKeyDown="PokemonTabControl_PreviewKeyDown">
+                <TabControl.ItemTemplate>
+                    <DataTemplate>
+                        <TextBlock Text="{Binding Type}"/>
+                    </DataTemplate>
+                </TabControl.ItemTemplate>
+                <TabControl.ContentTemplate>
+                    <DataTemplate>
+                        <DockPanel HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+                            <StackPanel Orientation="Horizontal" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"
+                                        DockPanel.Dock="Top" Margin="4">
+                                <StackPanel Orientation="Vertical" VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
+                                    <StackPanel Orientation="Horizontal" VerticalAlignment="Top" HorizontalAlignment="Center">
+                                        <Label Content="Encounter Rate"/>
+                                        <xctk:IntegerUpDown Value="{Binding EncounterRate, UpdateSourceTrigger=PropertyChanged}" Minimum="0" Maximum="100"
+                                                            ToolTip="The encounter rate of this habitat."/>
+                                    </StackPanel>
+                                    <StackPanel Orientation="Horizontal" VerticalAlignment="Stretch" HorizontalAlignment="Center">
+                                        <Button x:Name="addPokemonButton" VerticalAlignment="Bottom" HorizontalAlignment="Left" Margin="2" Height="24" Width="24" Click="addPokemonButton_Click" ToolTip="Add a new pokemon encounter.">
+                                            <Button.Background>
+                                                <ImageBrush ImageSource="/Editors/baseline_add_black_18dp.png"/>
+                                            </Button.Background>
+                                        </Button>
+                                        <Label Content="Add Wild Encounter Pokemon" VerticalAlignment="Bottom"/>
+                                    </StackPanel>
+                                </StackPanel>
+                                <GroupBox Margin="4" Header="Current Encounter Rates" HorizontalAlignment="Right" VerticalAlignment="Stretch">
+                                    <StackPanel Orientation="Horizontal">
+                                        <GroupBox Header="Morning" Width="70">
+                                            <Label Content="{Binding ViewModel.MorningEncounterRate, ElementName=MainEditor}"/>
+                                        </GroupBox>
+                                        <GroupBox Header="Day" Width="70">
+                                            <Label Content="{Binding ViewModel.DayEncounterRate, ElementName=MainEditor}"/>
+                                        </GroupBox>
+                                        <GroupBox Header="Night" Width="70">
+                                            <Label Content="{Binding ViewModel.NightEncounterRate, ElementName=MainEditor}"/>
+                                        </GroupBox>
+                                    </StackPanel>
+                                </GroupBox>
+                            </StackPanel>
+                            <DockPanel>
+                                <ListView ItemsSource="{Binding Pokemon}" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" VerticalContentAlignment="Top"  
+                                      ScrollViewer.VerticalScrollBarVisibility="Auto" ScrollViewer.CanContentScroll="True" DockPanel.Dock="Bottom"
+                                      PreviewKeyDown="PokemonList_PreviewKeyDown" VirtualizingPanel.IsVirtualizing="True"
+                                      VirtualizingPanel.VirtualizationMode="Recycling">
+                                    <ListView.ItemContainerStyle>
+                                        <Style TargetType="ListViewItem">
+                                            <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+                                        </Style>
+                                    </ListView.ItemContainerStyle>
+                                    <ListView.ItemTemplate>
+                                        <DataTemplate>
+                                            <DockPanel HorizontalAlignment="Stretch" Width="Auto">
+                                                <StackPanel HorizontalAlignment="Left" Orientation="Vertical" Margin="2">
+                                                    <Image Source="{Binding Species.FullFrontPicPath, Mode=OneWay, Converter={StaticResource ImageConverter}}"
+                                                           Height="96" Width="96" Canvas.Left="7" Canvas.Top="5"/>
+                                                    <ComboBox SelectedItem="{Binding Species}" Margin="2" 
+                                                              ItemsSource="{Binding ViewModel.PokemonSpecies, ElementName=MainEditor}"
+                                                              Canvas.Left="108" Canvas.Top="10" VerticalAlignment="Top" HorizontalAlignment="Stretch" ToolTip="The species of the current Pokemon."
+                                                              DisplayMemberPath="Name" VirtualizingPanel.IsVirtualizing="True"
+                                                              VirtualizingPanel.VirtualizationMode="Recycling">
+                                                        <ComboBox.ItemsPanel>
+                                                            <ItemsPanelTemplate>
+                                                                <VirtualizingStackPanel />
+                                                            </ItemsPanelTemplate>
+                                                        </ComboBox.ItemsPanel>
+                                                    </ComboBox>
+                                                </StackPanel>
+                                                <StackPanel HorizontalAlignment="Left" Orientation="Vertical" Margin="2">
+                                                    <DataGrid ItemsSource="{Binding Occurrences}" AutoGenerateColumns="False" 
+                                                          HorizontalAlignment="Stretch" CanUserSortColumns="False" 
+                                                          SelectionMode="Single" SelectionUnit="FullRow" CanUserAddRows="False"
+                                                          Width="Auto" HorizontalContentAlignment="Stretch" CanUserResizeColumns="True"
+                                                          CanUserDeleteRows="True" RowDetailsVisibilityMode="Collapsed" RowHeaderWidth="0"
+                                                          ToolTip="The occurrences of this pokemon. (`D` to duplicate, 'Delete' to remove)" PreviewKeyDown="OccurrenceGrid_PreviewKeyDown"
+                                                          GotFocus="OccurrenceGrid_GotFocus" VirtualizingPanel.IsVirtualizingWhenGrouping="True">
+                                                        <DataGrid.Columns>
+                                                            <DataGridTemplateColumn MinWidth="5" Header="X"/>
+                                                            <DataGridTemplateColumn MinWidth="90" Header="Time Of Day">
+                                                                <DataGridTemplateColumn.CellTemplate>
+                                                                    <DataTemplate>
+                                                                        <ComboBox ItemsSource="{Binding ViewModel.TimesOfDay, ElementName=MainEditor}" SelectedItem="{Binding Time, UpdateSourceTrigger=PropertyChanged}"
+                                                                                  Width="Auto" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" ToolTip="The time of day this occurrence happens."
+                                                                                  PreviewKeyDown="TimeOfDay_PreviewKeyDown"/>
+                                                                    </DataTemplate>
+                                                                </DataGridTemplateColumn.CellTemplate>
+                                                            </DataGridTemplateColumn>
+                                                            <DataGridTemplateColumn MinWidth="90" Header="Encounter Rate">
+                                                                <DataGridTemplateColumn.CellTemplate>
+                                                                    <DataTemplate>
+                                                                        <xctk:IntegerUpDown Value="{Binding EncounterRate, UpdateSourceTrigger=PropertyChanged}" Minimum="1" Maximum="64"
+                                                                                            ToolTip="The encounter rate of this occurrence."
+                                                                                            PreviewKeyDown="EncounterRate_PreviewKeyDown"/>
+                                                                    </DataTemplate>
+                                                                </DataGridTemplateColumn.CellTemplate>
+                                                            </DataGridTemplateColumn>
+                                                            <DataGridTemplateColumn MinWidth="90" Header="Mid-Level">
+                                                                <DataGridTemplateColumn.CellTemplate>
+                                                                    <DataTemplate>
+                                                                        <xctk:IntegerUpDown Value="{Binding MidLevel, UpdateSourceTrigger=PropertyChanged}" Minimum="1" Maximum="100"
+                                                                                            ToolTip="The median level of this occurrence."
+                                                                                            PreviewKeyDown="MidLevel_PreviewKeyDown"/>
+                                                                    </DataTemplate>
+                                                                </DataGridTemplateColumn.CellTemplate>
+                                                            </DataGridTemplateColumn>
+                                                            <DataGridTemplateColumn MinWidth="90" Header="Level Range">
+                                                                <DataGridTemplateColumn.CellTemplate>
+                                                                    <DataTemplate>
+                                                                        <xctk:IntegerUpDown Value="{Binding LevelRange, UpdateSourceTrigger=PropertyChanged}" Minimum="0" Maximum="8"
+                                                                                            ToolTip="The level range of this occurrence."
+                                                                                            PreviewKeyDown="LevelRange_PreviewKeyDown"/>
+                                                                    </DataTemplate>
+                                                                </DataGridTemplateColumn.CellTemplate>
+                                                            </DataGridTemplateColumn>
+                                                        </DataGrid.Columns>
+                                                    </DataGrid>
+                                                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                                                        <Button x:Name="addOccurrenceButton" HorizontalAlignment="Left" Margin="2" Height="24" Width="24" Click="addOccurrenceButton_Click" ToolTip="Add a new occurrence.">
+                                                            <Button.Background>
+                                                                <ImageBrush ImageSource="/Editors/baseline_add_black_18dp.png"/>
+                                                            </Button.Background>
+                                                        </Button>
+                                                        <Label Content="Add Wild Encounter Occurence"/>
+                                                    </StackPanel>
+                                                </StackPanel>
+                                            </DockPanel>
+                                        </DataTemplate>
+                                    </ListView.ItemTemplate>
+                                </ListView>
+                            </DockPanel>
+                        </DockPanel>
+                    </DataTemplate>
+                </TabControl.ContentTemplate>
+            </TabControl>
+        </DockPanel>
+    </Grid>
+</UserControl>

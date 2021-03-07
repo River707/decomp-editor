@@ -13,13 +13,7 @@
         <KeyBinding Command="{Binding Path=SaveCommand}" Gesture="CTRL+S" />
     </Window.InputBindings>
     <Grid>
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="682*"/>
-            <ColumnDefinition Width="47*"/>
-            <ColumnDefinition Width="15*"/>
-            <ColumnDefinition Width="82*"/>
-        </Grid.ColumnDefinitions>
-        <Menu HorizontalAlignment="Left" Height="27" VerticalAlignment="Top" Width="792" Grid.ColumnSpan="4">
+        <Menu HorizontalAlignment="Stretch" Height="27" VerticalAlignment="Top" Grid.ColumnSpan="4">
             <MenuItem Header="File" Height="27" Width="44">
                 <MenuItem Header="Open" InputGestureText="Ctrl+O" Command="{Binding Path=OpenCommand}"/>
                 <MenuItem Header="Save" InputGestureText="Ctrl+S" Command="{Binding Path=SaveCommand}"/>
@@ -28,7 +22,7 @@
                 <MenuItem Header="Exit" InputGestureText="Alt+F4"/>
             </MenuItem>
         </Menu>
-        <TabControl Margin="0,27,0,0" Grid.ColumnSpan="4">
+        <TabControl Margin="0,27,0,0" Grid.ColumnSpan="4" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
             <TabItem Header="Adventure Editor">
                 <Grid Name="adventureEditorTab" Background="#FFE5E5E5">
                     <editors:AdventureEditorView/>
@@ -42,6 +36,11 @@
             <TabItem Header="Trainer Editor">
                 <Grid Name="trainerEditorTab" Background="#FFE5E5E5">
                     <editors:TrainerEditorView/>
+                </Grid>
+            </TabItem>
+            <TabItem Header="Wild Encounter Editor">
+                <Grid Name="wildEncounterTab" Background="#FFE5E5E5">
+                    <editors:WildEncounterEditorView/>
                 </Grid>
             </TabItem>
         </TabControl>
