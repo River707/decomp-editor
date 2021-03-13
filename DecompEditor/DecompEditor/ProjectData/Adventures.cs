@@ -421,13 +421,9 @@ namespace DecompEditor.ProjectData {
           InProgressDescription = task.InProgressDescription;
           FailureDescription = task.FailureDescription;
           CompletedDescription = task.CompletedDescription;
-          if (task.PointOfContact.Length == 0) {
-            PointOfContact = PointOfContactGraphicsIdentifier = PointOfContactLocalIdentifier = null;
-          } else {
-            PointOfContact = task.PointOfContact;
-            PointOfContactLocalIdentifier = task.PointOfContactLocalIdentifier;
-            PointOfContactGraphicsIdentifier = task.PointOfContactGraphicsIdentifier;
-          }
+          PointOfContact = task.PointOfContact.Length == 0 ? null : task.PointOfContact;
+          PointOfContactLocalIdentifier = task.PointOfContactLocalIdentifier.Length == 0 ? null : task.PointOfContactLocalIdentifier;
+          PointOfContactGraphicsIdentifier = task.PointOfContactGraphicsIdentifier.Length == 0 ? null : task.PointOfContactGraphicsIdentifier;
           Location = task.Location;
           PreConditions = task.PreConditions.Count == 0
             ? null
