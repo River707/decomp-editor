@@ -9,187 +9,273 @@
       mc:Ignorable="d" d:DesignWidth="800"
       Name="MainEditor"
       DataContext="{Binding AdventureEditor, Source={StaticResource ViewModelLocator}}" 
-      Height="506">
+      VerticalAlignment="Stretch" HorizontalAlignment="Stretch"
+      Height="Auto" Width="Auto">
 
-    <Grid Margin="0,0,-20,17">
-        <DockPanel LastChildFill="True" Margin="0,0,-20,-14">
-            <Canvas Width="242">
-                <ListBox x:Name="adventureList" Width="242" ItemsSource="{Binding Adventures}" SelectionChanged="adventureList_SelectionChanged" Height="462"
-                     DisplayMemberPath="Title"/>
-                <Button x:Name="addAdventureButton" Canvas.Left="10" Canvas.Top="471" Height="22" Width="25" Click="addAdventureButton_Click"  ToolTip="Add a adventure.">
-                    <Button.Background>
-                        <ImageBrush ImageSource="/Editors/baseline_add_black_18dp.png"/>
-                    </Button.Background>
-                </Button>
-            </Canvas>
-            <Canvas Height="474" IsEnabled="{Binding AdventureIsSelected, Mode=OneWay}">
-                <GroupBox Header="Adventure" Height="474" Width="241" DataContext="{Binding CurrentAdventure}">
-                    <Canvas Margin="0,0,28,0">
-                        <Label Content="Title:" Height="26" Canvas.Left="6" Canvas.Top="5"/>
-                        <TextBox Text="{Binding Title, UpdateSourceTrigger=PropertyChanged}" TextWrapping="NoWrap" Width="160" Canvas.Left="65" Canvas.Top="10" ToolTip="The title of this adventure."/>
-                        <Label Content="Dev Title:" Height="26" Canvas.Left="6" Canvas.Top="31"/>
-                        <TextBox Text="{Binding DevTitle, UpdateSourceTrigger=PropertyChanged}" TextWrapping="NoWrap" Width="160" Canvas.Left="65" Canvas.Top="35" ToolTip="A developer title for this adventure."/>
-                        <Label Content="ID:" Height="26" Canvas.Left="6" Canvas.Top="57"/>
-                        <TextBox Text="{Binding Identifier, UpdateSourceTrigger=PropertyChanged}" TextWrapping="NoWrap" Width="160" Canvas.Left="65" Canvas.Top="61" ToolTip="A C identifier for this adventure." CharacterCasing="Upper"/>
-                        <DataGrid x:Name="taskMenu" ItemsSource="{Binding Tasks}" AutoGenerateColumns="False" 
-                                  Height="343" Width="215" Canvas.Top="88" Canvas.Left="10" CanUserSortColumns="False" 
-                                  SelectionMode="Single" SelectionUnit="FullRow"
-                                  CanUserDeleteRows="False" RowDetailsVisibilityMode="Collapsed" SelectionChanged="taskMenu_SelectionChanged" AllowDrop="True" 
-                                  Drop="menu_Drop" PreviewMouseLeftButtonDown="menu_PreviewMouseLeftButtonDown"
-                                  PreviewMouseMove="menu_PreviewMouseMove" PreviewMouseUp="menu_PreviewMouseUp" PreviewDragOver="menu_PreviewDragOver"
-                                  MouseDoubleClick="menu_MouseDoubleClick" PreviewKeyDown="menu_PreviewKeyDown" ToolTip="The tasks of this adventure. (Drag to re-arrange. 'Delete' to remove)">
-                            <DataGrid.Columns>
-                                <DataGridTextColumn Width="*" Binding="{Binding Title}" IsReadOnly="True" Header="Tasks"/>
-                            </DataGrid.Columns>
-                        </DataGrid>
-                    </Canvas>
-                </GroupBox>
-                <GroupBox Header="Task" Height="474" Width="342" Canvas.Left="246" IsEnabled="{Binding TaskIsSelected}">
-                    <TabControl DataContext="{Binding CurrentTask}">
-                        <TabItem Header="General">
-                            <Canvas Margin="0,0,-2,0">
-                                <Label Content="Title:" Height="26" Canvas.Left="2" Canvas.Top="5"/>
-                                <TextBox Text="{Binding Title, UpdateSourceTrigger=PropertyChanged}" TextWrapping="NoWrap" Width="246" Canvas.Left="60" Canvas.Top="10" ToolTip="The title of this task."/>
-                                <Label Content="ID:" Height="26" Canvas.Left="2" Canvas.Top="32"/>
-                                <TextBox Text="{Binding Identifier, UpdateSourceTrigger=PropertyChanged}" TextWrapping="NoWrap" Width="246" Canvas.Left="60" Canvas.Top="36" ToolTip="The C identifier of this task." CharacterCasing="Upper"/>
-                                <Label Content="Location:" Height="26" Canvas.Left="2" Canvas.Top="59"/>
-                                <TextBox Text="{Binding Location, UpdateSourceTrigger=PropertyChanged}" TextWrapping="NoWrap" Width="246" Canvas.Left="60" Canvas.Top="63" ToolTip="The map location this task is initiated in." CharacterCasing="Upper"/>
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="Auto"/>
+            <ColumnDefinition/>
+            <ColumnDefinition/>
+        </Grid.ColumnDefinitions>
 
-                                <GroupBox Header="Point-Of-Contact" Canvas.Top="86" Height="109" Width="320" Canvas.Left="3">
-                                    <Canvas Margin="0,0,0,-1">
-                                        <Label Content="Name:" Margin="0,0,225,0" Height="28"/>
-                                        <TextBox Text="{Binding PointOfContact, UpdateSourceTrigger=PropertyChanged}" ToolTip="The name of the point of contact for this task." Canvas.Left="73" Canvas.Top="5" Width="225" />
-                                        <Label Content="Local ID:" Height="28" Canvas.Top="28"/>
-                                        <TextBox Text="{Binding PointOfContactLocalIdentifier, UpdateSourceTrigger=PropertyChanged}" ToolTip="The graphics identifier of the point of contact for this task." Canvas.Left="73" Canvas.Top="34" Width="225" CharacterCasing="Upper" />
-                                        <Label Content="Graphics ID:" Height="28" Canvas.Top="57"/>
-                                        <TextBox Text="{Binding PointOfContactGraphicsIdentifier, UpdateSourceTrigger=PropertyChanged}" ToolTip="The graphics identifier of the point of contact for this task." Canvas.Left="73" Canvas.Top="63" Width="225" CharacterCasing="Upper" />
-                                    </Canvas>
-                                </GroupBox>
-                            </Canvas>
-                        </TabItem>
-                        <TabItem Header="Descriptions">
-                            <Canvas>
-                                <GroupBox Header="InProgress Description" Canvas.Top="10" Height="125" Width="320">
-                                    <TextBox Canvas.Left="10" Canvas.Top="77" Name="tbMultiLine"
-                                     Text="{Binding InProgressDescription, UpdateSourceTrigger=PropertyChanged}" TextWrapping="Wrap" AcceptsReturn="True"
-                                     VerticalScrollBarVisibility="Visible" Height="73"
-                                     ToolTip="The description of this task when it is in progress." Margin="10,0,10,0">
-                                        <TextBox.InputBindings>
-                                            <KeyBinding Command="{Binding InsertDescriptionLocTag, ElementName=MainEditor}" Key="L" Modifiers="Ctrl"/>
-                                            <KeyBinding Command="{Binding InsertDescriptionNameTag, ElementName=MainEditor}" Key="N" Modifiers="Ctrl"/>
-                                        </TextBox.InputBindings>
-                                    </TextBox>
-                                </GroupBox>
-                                <GroupBox Header="Failure Description" Canvas.Left="2" Canvas.Top="149" Height="125" Width="320">
-                                    <TextBox Canvas.Left="10" Canvas.Top="77" x:Name="tbMultiLine1"
-                                     Text="{Binding FailureDescription, UpdateSourceTrigger=PropertyChanged}" TextWrapping="Wrap" AcceptsReturn="True" 
-                                     VerticalScrollBarVisibility="Visible" Height="73"
-                                     ToolTip="The description of this task when it is failed." Margin="10,0,10,0">
-                                        <TextBox.InputBindings>
-                                            <KeyBinding Command="{Binding InsertDescriptionLocTag, ElementName=MainEditor}" Key="L" Modifiers="Ctrl"/>
-                                            <KeyBinding Command="{Binding InsertDescriptionNameTag, ElementName=MainEditor}" Key="N" Modifiers="Ctrl"/>
-                                        </TextBox.InputBindings>
-                                    </TextBox>
-                                </GroupBox>
-                                <GroupBox Header="Completed Description" Canvas.Left="2" Canvas.Top="293" Height="125" Width="320">
-                                    <TextBox Canvas.Left="10" Canvas.Top="77" x:Name="tbMultiLine2"
-                                     Text="{Binding CompletedDescription, UpdateSourceTrigger=PropertyChanged}" TextWrapping="Wrap" AcceptsReturn="True" 
-                                     VerticalScrollBarVisibility="Visible" Height="73"
-                                     ToolTip="The description of this task when it is completed." Margin="10,0,10,0">
-                                        <TextBox.InputBindings>
-                                            <KeyBinding Command="{Binding InsertDescriptionLocTag, ElementName=MainEditor}" Key="L" Modifiers="Ctrl"/>
-                                            <KeyBinding Command="{Binding InsertDescriptionNameTag, ElementName=MainEditor}" Key="N" Modifiers="Ctrl"/>
-                                        </TextBox.InputBindings>
-                                    </TextBox>
-                                </GroupBox>
-                            </Canvas>
-                        </TabItem>
-                        <TabItem Header="Conditions">
-                            <Canvas>
-                                <Canvas.Resources>
-                                    <DataTemplate DataType="{x:Type projectData:AdventureTaskFlagCondition}">
-                                        <Grid HorizontalAlignment="Stretch">
-                                            <Grid.ColumnDefinitions>
-                                                <ColumnDefinition Width="*"/>
-                                                <ColumnDefinition Width="Auto"/>
-                                            </Grid.ColumnDefinitions>
-
-                                            <TextBox Grid.Column="0" Text="{Binding Identifier, UpdateSourceTrigger=PropertyChanged}" Margin="5" ToolTip="The name of the flag used by the condition."/>
-                                            <CheckBox Grid.Column="1" Width="20" VerticalAlignment="Center" IsChecked="{Binding Value, UpdateSourceTrigger=PropertyChanged}"/>
-                                        </Grid>
-                                    </DataTemplate>
-                                    <DataTemplate DataType="{x:Type projectData:AdventureTaskTaskCondition}">
-                                        <Grid HorizontalAlignment="Stretch">
-                                            <Grid.ColumnDefinitions>
-                                                <ColumnDefinition Width="*"/>
-                                                <ColumnDefinition Width="Auto"/>
-                                            </Grid.ColumnDefinitions>
-
-                                            <ComboBox Grid.Column="0" ItemsSource="{Binding ViewModel.Tasks, ElementName=MainEditor}" SelectedValue="{Binding Task, UpdateSourceTrigger=PropertyChanged}" Margin="5"/>
-                                            <ComboBox Grid.Column="1" ItemsSource="{Binding ViewModel.TaskConditionValues, ElementName=MainEditor}" SelectedValue="{Binding Value, UpdateSourceTrigger=PropertyChanged}" Margin="5"/>
-                                        </Grid>
-                                    </DataTemplate>
-                                    <DataTemplate DataType="{x:Type projectData:AdventureTaskVariableCondition}">
-                                        <Grid HorizontalAlignment="Stretch">
-                                            <Grid.ColumnDefinitions>
-                                                <ColumnDefinition Width="*"/>
-                                                <ColumnDefinition Width="Auto"/>
-                                            </Grid.ColumnDefinitions>
-
-                                            <TextBox Grid.Column="0" Text="{Binding Identifier, UpdateSourceTrigger=PropertyChanged}" Margin="5" ToolTip="The name of the variable used by the condition."/>
-                                            <xctk:IntegerUpDown Grid.Column="1" Value="{Binding Value, UpdateSourceTrigger=PropertyChanged}" VerticalAlignment="Center" Minimum="0" Maximum="65536" Canvas.Left="55" Canvas.Top="177" Width="60" ToolTip="The expected value of the variable (triggers when >=)."/>
-                                        </Grid>
-                                    </DataTemplate>
-                                    <local:CellTemplateSelector x:Key="selector"/>
-                                    <DataTemplate x:Key="PlaceholderTemplate">
-                                        <ComboBox Name="newConditionBox" Text="New Condition" SelectionChanged="NewConditionBox_SelectionChanged">
-                                            <ComboBoxItem Content="Flag Condition"/>
-                                            <ComboBoxItem Content="Task Condition"/>
-                                            <ComboBoxItem Content="Variable Condition"/>
-                                        </ComboBox>
-                                    </DataTemplate>
-                                </Canvas.Resources>
-                                <GroupBox Header="Pre-Conditions" Height="200" Width="320" Canvas.Left="2" Canvas.Top="10">
-                                    <DataGrid x:Name="preconditionMenu" ItemsSource="{Binding PreConditions}" AutoGenerateColumns="False" 
-                                              Height="150" CanUserSortColumns="False" SelectionMode="Single" SelectionUnit="FullRow"
-                                              CanUserDeleteRows="False" HeadersVisibility="None"
-                                              AllowDrop="True" Drop="menu_Drop" SelectedCellsChanged="preconditionMenu_SelectedCellsChanged"
-                                              PreviewMouseLeftButtonDown="menu_PreviewMouseLeftButtonDown"
-                                              PreviewMouseMove="menu_PreviewMouseMove" PreviewMouseUp="menu_PreviewMouseUp" PreviewDragOver="menu_PreviewDragOver" 
-                                              PreviewKeyDown="menu_PreviewKeyDown" ToolTip="The pre-conditions of this task. (Double-Click to edit. Drag to re-arrange. 'Delete' to remove)" Margin="10,0,10,0">
-                                        <DataGrid.Columns>
-                                            <DataGridTemplateColumn Width="*" CellTemplateSelector="{StaticResource selector}"/>
-                                        </DataGrid.Columns>
-                                        <DataGrid.RowDetailsTemplate>
-                                            <DataTemplate>
-                                                <TextBox Text="{Binding DevComment, UpdateSourceTrigger=PropertyChanged}" TextWrapping="Wrap" AcceptsReturn="True" Height="60" Margin="5" />
-                                            </DataTemplate>
-                                        </DataGrid.RowDetailsTemplate>
-                                    </DataGrid>
-                                </GroupBox>
-                                <GroupBox Header="Failure Conditions" Height="200" Width="320" Canvas.Top="220">
-                                    <DataGrid x:Name="failureconditionMenu" ItemsSource="{Binding FailureConditions}" AutoGenerateColumns="False" 
-                                              Height="150" CanUserSortColumns="False" SelectedCellsChanged="preconditionMenu_SelectedCellsChanged"
-                                              SelectionMode="Single" SelectionUnit="FullRow" HeadersVisibility="None"
-                                              CanUserDeleteRows="False" AllowDrop="True" 
-                                              Drop="menu_Drop" PreviewMouseLeftButtonDown="menu_PreviewMouseLeftButtonDown"
-                                              PreviewMouseMove="menu_PreviewMouseMove" PreviewMouseUp="menu_PreviewMouseUp" PreviewDragOver="menu_PreviewDragOver"
-                                              PreviewKeyDown="menu_PreviewKeyDown" ToolTip="The failure conditions of this task. (Double-Click to edit. Drag to re-arrange. 'Delete' to remove)" Margin="10,0,10,0">
-                                        <DataGrid.Columns>
-                                            <DataGridTemplateColumn Width="*"  CellTemplateSelector="{StaticResource selector}"/>
-                                        </DataGrid.Columns>
-                                        <DataGrid.RowDetailsTemplate>
-                                            <DataTemplate>
-                                                <TextBox Text="{Binding DevComment, UpdateSourceTrigger=PropertyChanged}" TextWrapping="Wrap" AcceptsReturn="True" Height="60" Margin="5" />
-                                            </DataTemplate>
-                                        </DataGrid.RowDetailsTemplate>
-                                    </DataGrid>
-                                </GroupBox>
-                            </Canvas>
-                        </TabItem>
-                    </TabControl>
-                </GroupBox>
-            </Canvas>
+        <DockPanel LastChildFill="True" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Grid.Column="0">
+            <Button x:Name="addAdventureButton" DockPanel.Dock="Bottom" HorizontalAlignment="Left" Height="24"
+                    Width="24" Click="addAdventureButton_Click" ToolTip="Add a adventure.">
+                <Button.Background>
+                    <ImageBrush ImageSource="/Editors/baseline_add_black_18dp.png"/>
+                </Button.Background>
+            </Button>
+            <ListBox x:Name="adventureList" Width="242" ItemsSource="{Binding Adventures}" SelectionChanged="adventureList_SelectionChanged"
+                        VerticalAlignment="Stretch" DisplayMemberPath="Title" DockPanel.Dock="Top"/>
         </DockPanel>
+        <GroupBox IsEnabled="{Binding ViewModel.AdventureIsSelected, Mode=OneWay}" Grid.Column="1" Header="Adventure"
+                  VerticalAlignment="Stretch" HorizontalAlignment="Stretch"
+                  DataContext="{Binding CurrentAdventure}" DockPanel.Dock="Left">
+            <Grid VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+                <Grid VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+
+                    <Label Grid.Row="0" Grid.Column="0" Content="Title:"/>
+                    <TextBox Grid.Row="0" Grid.Column="1" Text="{Binding Title, UpdateSourceTrigger=PropertyChanged}" TextWrapping="NoWrap"
+                         Height="20" ToolTip="The title of this adventure."/>
+                    <Label Grid.Row="1" Grid.Column="0" Content="Dev Title:"/>
+                    <TextBox Grid.Row="1" Grid.Column="1" Text="{Binding DevTitle, UpdateSourceTrigger=PropertyChanged}" TextWrapping="NoWrap"
+                         Height="20" ToolTip="A developer title for this adventure."/>
+                    <Label Grid.Row="2" Grid.Column="0" Content="ID:"/>
+                    <TextBox Grid.Row="2" Grid.Column="1" Text="{Binding Identifier, UpdateSourceTrigger=PropertyChanged}" TextWrapping="NoWrap"
+                         Height="20" ToolTip="A C identifier for this adventure." CharacterCasing="Upper"/>
+                </Grid>
+                <DataGrid Margin="0, 10, 0, 0" Grid.Row="3" Grid.Column="1" x:Name="taskMenu" ItemsSource="{Binding Tasks}" AutoGenerateColumns="False" 
+                                CanUserSortColumns="False" 
+                                SelectionMode="Single" SelectionUnit="FullRow"
+                                CanUserDeleteRows="False" RowDetailsVisibilityMode="Collapsed" SelectionChanged="taskMenu_SelectionChanged" AllowDrop="True" 
+                                Drop="menu_Drop" PreviewMouseLeftButtonDown="menu_PreviewMouseLeftButtonDown"
+                                PreviewMouseMove="menu_PreviewMouseMove" PreviewMouseUp="menu_PreviewMouseUp" PreviewDragOver="menu_PreviewDragOver"
+                                MouseDoubleClick="menu_MouseDoubleClick" PreviewKeyDown="menu_PreviewKeyDown" ToolTip="The tasks of this adventure. (Drag to re-arrange. 'Delete' to remove)">
+                    <DataGrid.Columns>
+                        <DataGridTextColumn Width="*" Binding="{Binding Title}" IsReadOnly="True" Header="Tasks"/>
+                    </DataGrid.Columns>
+                </DataGrid>
+            </Grid>
+        </GroupBox>
+        <GridSplitter Grid.Column="2"
+              HorizontalAlignment="Left"
+              VerticalAlignment="Stretch"
+              ShowsPreview="true"
+              Width="5"/>
+        <GroupBox Header="Task" Grid.Column="2" VerticalAlignment="Stretch"
+                  HorizontalAlignment="Stretch" IsEnabled="{Binding TaskIsSelected}">
+            <TabControl DataContext="{Binding CurrentTask}">
+                <TabItem Header="General">
+                    <Grid Margin="0,0,-2,0">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                        </Grid.RowDefinitions>
+                        <Grid Grid.Row="0">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                            </Grid.RowDefinitions>
+
+                            <Label Grid.Row="0" Grid.Column="0" Content="Title:"/>
+                            <TextBox Grid.Row="0" Grid.Column="1" Text="{Binding Title, UpdateSourceTrigger=PropertyChanged}"
+                                     Height="20" TextWrapping="NoWrap" ToolTip="The title of this task."/>
+                            <Label Grid.Row="1" Grid.Column="0" Content="ID:"/>
+                            <TextBox Grid.Row="1" Grid.Column="1" Text="{Binding Identifier, UpdateSourceTrigger=PropertyChanged}" TextWrapping="NoWrap"
+                                     Height="20" ToolTip="The C identifier of this task." CharacterCasing="Upper"/>
+                            <Label Grid.Row="2" Grid.Column="0" Content="Location:"/>
+                            <TextBox Grid.Row="2" Grid.Column="1" Text="{Binding Location, UpdateSourceTrigger=PropertyChanged}" TextWrapping="NoWrap"
+                                     Height="20" ToolTip="The map location this task is initiated in." CharacterCasing="Upper"/>
+                        </Grid>
+                        <GridSplitter Grid.Row="1" VerticalAlignment="Top"
+                                      HorizontalAlignment="Stretch" ShowsPreview="true" Height="5"/>
+                        <GroupBox Header="Point-Of-Contact" Margin="3" Grid.Row="1" Height="Auto">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition Width="*"/>
+                                </Grid.ColumnDefinitions>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                </Grid.RowDefinitions>
+
+                                <Label Grid.Row="0" Grid.Column="0"  Content="Name:"/>
+                                <TextBox Grid.Row="0" Grid.Column="1"  Text="{Binding PointOfContact, UpdateSourceTrigger=PropertyChanged}"
+                                         Height="20" ToolTip="The name of the point of contact for this task."/>
+                                <Label Grid.Row="1" Grid.Column="0"  Content="Local ID:"/>
+                                <TextBox Grid.Row="1" Grid.Column="1"  Text="{Binding PointOfContactLocalIdentifier, UpdateSourceTrigger=PropertyChanged}"
+                                         Height="20" ToolTip="The graphics identifier of the point of contact for this task."
+                                         CharacterCasing="Upper" />
+                                <Label Grid.Row="2" Grid.Column="0"  Content="Graphics ID:"/>
+                                <TextBox Grid.Row="2" Grid.Column="1"
+                                         Text="{Binding PointOfContactGraphicsIdentifier, UpdateSourceTrigger=PropertyChanged}"
+                                         Height="20" ToolTip="The graphics identifier of the point of contact for this task."
+                                         CharacterCasing="Upper" />
+                            </Grid>
+                        </GroupBox>
+                    </Grid>
+                </TabItem>
+                <TabItem Header="Descriptions">
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="*"/>
+                            <RowDefinition Height="*"/>
+                            <RowDefinition Height="*"/>
+                        </Grid.RowDefinitions>
+                        <GroupBox Header="InProgress Description" Grid.Row="0"  Margin="0,0,0,5">
+                            <TextBox Name="tbMultiLine"
+                                    Text="{Binding InProgressDescription, UpdateSourceTrigger=PropertyChanged}" TextWrapping="Wrap" AcceptsReturn="True"
+                                    VerticalScrollBarVisibility="Visible"
+                                    ToolTip="The description of this task when it is in progress." Margin="10">
+                                <TextBox.InputBindings>
+                                    <KeyBinding Command="{Binding InsertDescriptionLocTag, ElementName=MainEditor}" Key="L" Modifiers="Ctrl"/>
+                                    <KeyBinding Command="{Binding InsertDescriptionNameTag, ElementName=MainEditor}" Key="N" Modifiers="Ctrl"/>
+                                </TextBox.InputBindings>
+                            </TextBox>
+                        </GroupBox>
+                        <GridSplitter Grid.Row="1" VerticalAlignment="Top"
+                                      HorizontalAlignment="Stretch"
+                                      ShowsPreview="true" Height="5"/>
+                        <GroupBox Header="Failure Description" Grid.Row="1" Margin="0,5,0,5">
+                            <TextBox x:Name="tbMultiLine1" Text="{Binding FailureDescription, UpdateSourceTrigger=PropertyChanged}"
+                                    TextWrapping="Wrap" AcceptsReturn="True" 
+                                    VerticalScrollBarVisibility="Visible"
+                                    ToolTip="The description of this task when it is failed." Margin="10">
+                                <TextBox.InputBindings>
+                                    <KeyBinding Command="{Binding InsertDescriptionLocTag, ElementName=MainEditor}" Key="L" Modifiers="Ctrl"/>
+                                    <KeyBinding Command="{Binding InsertDescriptionNameTag, ElementName=MainEditor}" Key="N" Modifiers="Ctrl"/>
+                                </TextBox.InputBindings>
+                            </TextBox>
+                        </GroupBox>
+                        <GridSplitter Grid.Row="2" VerticalAlignment="Top"
+                                      HorizontalAlignment="Stretch"
+                                      ShowsPreview="true" Height="5"/>
+                        <GroupBox Header="Completed Description" Grid.Row="2" Margin="0,5,0,0">
+                            <TextBox x:Name="tbMultiLine2"
+                                    Text="{Binding CompletedDescription, UpdateSourceTrigger=PropertyChanged}" TextWrapping="Wrap" AcceptsReturn="True" 
+                                    VerticalScrollBarVisibility="Visible"
+                                    ToolTip="The description of this task when it is completed." Margin="10">
+                                <TextBox.InputBindings>
+                                    <KeyBinding Command="{Binding InsertDescriptionLocTag, ElementName=MainEditor}" Key="L" Modifiers="Ctrl"/>
+                                    <KeyBinding Command="{Binding InsertDescriptionNameTag, ElementName=MainEditor}" Key="N" Modifiers="Ctrl"/>
+                                </TextBox.InputBindings>
+                            </TextBox>
+                        </GroupBox>
+                    </Grid>
+                </TabItem>
+                <TabItem Header="Conditions">
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="*"/>
+                            <RowDefinition Height="*"/>
+                        </Grid.RowDefinitions>
+                        <Grid.Resources>
+                            <DataTemplate DataType="{x:Type projectData:AdventureTaskFlagCondition}">
+                                <Grid HorizontalAlignment="Stretch">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="Auto"/>
+                                    </Grid.ColumnDefinitions>
+
+                                    <TextBox Grid.Column="0" Text="{Binding Identifier, UpdateSourceTrigger=PropertyChanged}" Margin="5" ToolTip="The name of the flag used by the condition."/>
+                                    <CheckBox Grid.Column="1" Width="20" VerticalAlignment="Center" IsChecked="{Binding Value, UpdateSourceTrigger=PropertyChanged}"/>
+                                </Grid>
+                            </DataTemplate>
+                            <DataTemplate DataType="{x:Type projectData:AdventureTaskTaskCondition}">
+                                <Grid HorizontalAlignment="Stretch">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="Auto"/>
+                                    </Grid.ColumnDefinitions>
+
+                                    <ComboBox Grid.Column="0" ItemsSource="{Binding ViewModel.Tasks, ElementName=MainEditor}" SelectedValue="{Binding Task, UpdateSourceTrigger=PropertyChanged}" Margin="5"/>
+                                    <ComboBox Grid.Column="1" ItemsSource="{Binding ViewModel.TaskConditionValues, ElementName=MainEditor}" SelectedValue="{Binding Value, UpdateSourceTrigger=PropertyChanged}" Margin="5"/>
+                                </Grid>
+                            </DataTemplate>
+                            <DataTemplate DataType="{x:Type projectData:AdventureTaskVariableCondition}">
+                                <Grid HorizontalAlignment="Stretch">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="Auto"/>
+                                    </Grid.ColumnDefinitions>
+
+                                    <TextBox Grid.Column="0" Text="{Binding Identifier, UpdateSourceTrigger=PropertyChanged}" Margin="5" ToolTip="The name of the variable used by the condition."/>
+                                    <xctk:IntegerUpDown Grid.Column="1" Value="{Binding Value, UpdateSourceTrigger=PropertyChanged}" VerticalAlignment="Center" Minimum="0" Maximum="65536" Canvas.Left="55" Canvas.Top="177" Width="60" ToolTip="The expected value of the variable (triggers when >=)."/>
+                                </Grid>
+                            </DataTemplate>
+                            <local:CellTemplateSelector x:Key="selector"/>
+                            <DataTemplate x:Key="PlaceholderTemplate">
+                                <ComboBox Name="newConditionBox" Text="New Condition" SelectionChanged="NewConditionBox_SelectionChanged">
+                                    <ComboBoxItem Content="Flag Condition"/>
+                                    <ComboBoxItem Content="Task Condition"/>
+                                    <ComboBoxItem Content="Variable Condition"/>
+                                </ComboBox>
+                            </DataTemplate>
+                        </Grid.Resources>
+                        <GroupBox Header="Pre-Conditions" Grid.Row="0" Margin="0,0,0,5">
+                            <DataGrid x:Name="preconditionMenu" ItemsSource="{Binding PreConditions}" AutoGenerateColumns="False" 
+                                            CanUserSortColumns="False" SelectionMode="Single" SelectionUnit="FullRow"
+                                            CanUserDeleteRows="False" HeadersVisibility="None"
+                                            AllowDrop="True" Drop="menu_Drop" SelectedCellsChanged="preconditionMenu_SelectedCellsChanged"
+                                            PreviewMouseLeftButtonDown="menu_PreviewMouseLeftButtonDown"
+                                            PreviewMouseMove="menu_PreviewMouseMove" PreviewMouseUp="menu_PreviewMouseUp" PreviewDragOver="menu_PreviewDragOver" 
+                                            PreviewKeyDown="menu_PreviewKeyDown" ToolTip="The pre-conditions of this task. (Double-Click to edit. Drag to re-arrange. 'Delete' to remove)" Margin="10">
+                                <DataGrid.Columns>
+                                    <DataGridTemplateColumn Width="*" CellTemplateSelector="{StaticResource selector}"/>
+                                </DataGrid.Columns>
+                                <DataGrid.RowDetailsTemplate>
+                                    <DataTemplate>
+                                        <TextBox Text="{Binding DevComment, UpdateSourceTrigger=PropertyChanged}" TextWrapping="Wrap" AcceptsReturn="True" Height="60" Margin="5" />
+                                    </DataTemplate>
+                                </DataGrid.RowDetailsTemplate>
+                            </DataGrid>
+                        </GroupBox>
+                        <GridSplitter Grid.Row="1" VerticalAlignment="Top"
+                                      HorizontalAlignment="Stretch"
+                                      ShowsPreview="true" Height="5"/>
+                        <GroupBox Header="Failure Conditions" Grid.Row="1" Margin="0,5,0,0">
+                            <DataGrid x:Name="failureconditionMenu" ItemsSource="{Binding FailureConditions}" AutoGenerateColumns="False" 
+                                            CanUserSortColumns="False" SelectedCellsChanged="preconditionMenu_SelectedCellsChanged"
+                                            SelectionMode="Single" SelectionUnit="FullRow" HeadersVisibility="None"
+                                            CanUserDeleteRows="False" AllowDrop="True" 
+                                            Drop="menu_Drop" PreviewMouseLeftButtonDown="menu_PreviewMouseLeftButtonDown"
+                                            PreviewMouseMove="menu_PreviewMouseMove" PreviewMouseUp="menu_PreviewMouseUp" PreviewDragOver="menu_PreviewDragOver"
+                                            PreviewKeyDown="menu_PreviewKeyDown" ToolTip="The failure conditions of this task. (Double-Click to edit. Drag to re-arrange. 'Delete' to remove)" Margin="10">
+                                <DataGrid.Columns>
+                                    <DataGridTemplateColumn Width="*"  CellTemplateSelector="{StaticResource selector}"/>
+                                </DataGrid.Columns>
+                                <DataGrid.RowDetailsTemplate>
+                                    <DataTemplate>
+                                        <TextBox Text="{Binding DevComment, UpdateSourceTrigger=PropertyChanged}" TextWrapping="Wrap" AcceptsReturn="True" Height="60" Margin="5" />
+                                    </DataTemplate>
+                                </DataGrid.RowDetailsTemplate>
+                            </DataGrid>
+                        </GroupBox>
+                    </Grid>
+                </TabItem>
+            </TabControl>
+        </GroupBox>
     </Grid>
 </UserControl>
