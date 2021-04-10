@@ -172,20 +172,20 @@ namespace DecompEditor.ProjectData {
     class JSONDatabase {
       public class JSONWildEncounterOccurrence {
         public string Time { get; set; }
-        public int MidLevel { get; set; }
+        public int? MidLevel { get; set; } = 0;
         public int LevelRange { get; set; }
         public int EncounterRate { get; set; }
 
         public JSONWildEncounterOccurrence() { }
         public JSONWildEncounterOccurrence(WildEncounterOccurrence occurrence) {
-          MidLevel = occurrence.MidLevel;
+          MidLevel = occurrence.MidLevel == 0 ? new int?() : occurrence.MidLevel;
           LevelRange = occurrence.LevelRange;
           EncounterRate = occurrence.EncounterRate;
           Time = occurrence.Time;
         }
         public WildEncounterOccurrence deserialize() {
           return new WildEncounterOccurrence() {
-            MidLevel = MidLevel,
+            MidLevel = MidLevel ?? 0,
             LevelRange = LevelRange,
             EncounterRate = EncounterRate,
             Time = Time

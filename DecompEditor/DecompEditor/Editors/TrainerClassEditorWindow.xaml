@@ -6,10 +6,10 @@
         xmlns:local="clr-namespace:DecompEditor.Editors" 
         xmlns:main="clr-namespace:DecompEditor" 
         xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
-        mc:Ignorable="d"
+        mc:Ignorable="d" Name="MainEditor"
         DataContext="{Binding TrainerClassEditor, Source={StaticResource ViewModelLocator}}"
-        Title="TrainerClass Editor" Height="228" Width="305">
-    <Canvas>
+        Title="TrainerClass Editor" Height="260" Width="305">
+    <Canvas Margin="0,0,0,-6">
         <ComboBox Name="classList" SelectedItem="{Binding CurrentClass}" ItemsSource="{Binding EditorViewModel.TrainerClasses}"
                   Width="120" Canvas.Left="86" Canvas.Top="21" ToolTip="The class being edited."
                   DisplayMemberPath="Identifier"/>
@@ -19,16 +19,23 @@
                 <ImageBrush ImageSource="/Editors/baseline_add_black_18dp.png"/>
             </Button.Background>
         </Button>
-        <GroupBox Header="Properties" Canvas.Left="10" Canvas.Top="65" Height="113" Width="272">
+        <GroupBox Header="Properties" Canvas.Left="10" Canvas.Top="65" Height="137" Width="272">
             <Canvas>
-                <TextBlock Text="ID:" Canvas.Left="16" Canvas.Top="10"/>
-                <TextBlock Text="Name:" Canvas.Left="16" Canvas.Top="37"/>
-                <TextBlock Text="Money Factor:" Canvas.Left="16" Canvas.Top="64"/>
-                <TextBox Text="{Binding CurrentClass.Identifier, UpdateSourceTrigger=PropertyChanged}" TextWrapping="NoWrap" Width="190" Canvas.Left="60" Canvas.Top="9" ToolTip="The C identifier of the class." CharacterCasing="Upper"/>
+                <TextBlock Text="ID:" Canvas.Left="8" Canvas.Top="9"/>
+                <TextBlock Text="Name:" Canvas.Left="8" Canvas.Top="36"/>
+                <TextBlock Text="Money Factor:" Canvas.Left="117" Canvas.Top="63"/>
+                <TextBox Text="{Binding CurrentClass.Identifier, UpdateSourceTrigger=PropertyChanged}" TextWrapping="NoWrap" Width="190" Canvas.Left="50" Canvas.Top="8" ToolTip="The C identifier of the class." CharacterCasing="Upper"/>
                 <TextBox Name="className" Text="{Binding CurrentClass.Name, UpdateSourceTrigger=PropertyChanged}"
-                         TextWrapping="NoWrap" Width="190" Canvas.Left="60" Canvas.Top="37" ToolTip="The display name of the class."/>
-                <xctk:IntegerUpDown Value="{Binding CurrentClass.MoneyFactor}" Minimum="0" Maximum="100" Canvas.Left="102" Canvas.Top="62"
+                         TextWrapping="NoWrap" Width="190" Canvas.Left="50" Canvas.Top="36" ToolTip="The display name of the class."/>
+                <xctk:IntegerUpDown Value="{Binding CurrentClass.MoneyFactor}" Minimum="0" Maximum="100" Canvas.Left="197" Canvas.Top="61"
                                     Width="53" ToolTip="The money factor for when the player battles a trainer of this class."/>
+                <TextBlock Text="Base IVs:" Canvas.Left="8" Canvas.Top="63"/>
+                <xctk:IntegerUpDown Value="{Binding CurrentClass.IVs}" Minimum="0" Maximum="31" Canvas.Left="62" Canvas.Top="61"
+                    Width="53" ToolTip="The base IVs to use for pokemon belonging to trainers of this class."/>
+                <TextBlock Text="Pokeball:" Canvas.Left="8" Canvas.Top="88"/>
+                <ComboBox Name="classPokeball" SelectedValue="{Binding CurrentClass.Pokeball}" ItemsSource="{Binding ViewModel.Pokeballs, ElementName=MainEditor}"
+                          Canvas.Left="62" Canvas.Top="88" Width="178" ToolTip="The pokeball used when throwing out pokemon of trainers by this class."
+                          DisplayMemberPath="Name"/>
             </Canvas>
         </GroupBox>
     </Canvas>

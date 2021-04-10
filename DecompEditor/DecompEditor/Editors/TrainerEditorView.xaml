@@ -1,115 +1,334 @@
-﻿<UserControl x:Class="DecompEditor.Editors.TrainerEditorView"
-             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
-             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-             xmlns:local="clr-namespace:DecompEditor.Editors"
-             xmlns:sdl="http://schemas.sdl.com/xaml" xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit" xmlns:utils="clr-namespace:DecompEditor.Utils"
-             mc:Ignorable="d" d:DesignWidth="800"
-             Name="MainEditor"
-             DataContext="{Binding TrainerEditor, Source={StaticResource ViewModelLocator}}" 
-             Height="506">
+﻿<UserControl
+    x:Class="DecompEditor.Editors.TrainerEditorView"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:local="clr-namespace:DecompEditor.Editors"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:sdl="http://schemas.sdl.com/xaml"
+    xmlns:utils="clr-namespace:DecompEditor.Utils"
+    xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
+    Name="MainEditor"
+    Height="506"
+    d:DesignWidth="800"
+    DataContext="{Binding TrainerEditor, Source={StaticResource ViewModelLocator}}"
+    mc:Ignorable="d">
     <UserControl.Resources>
-        <utils:ImageConverter x:Key="ImageConverter"/>
+        <utils:ImageConverter x:Key="ImageConverter" />
     </UserControl.Resources>
     <Grid Margin="0,0,0,17">
-        <DockPanel LastChildFill="True" Margin="0,0,0,-14" Grid.RowSpan="2">
-            <ListBox x:Name="trainerList" Width="208" ItemsSource="{Binding Trainers}" SelectionChanged="trainerList_SelectionChanged" Height="493"
-                     DisplayMemberPath="Identifier"/>
-            <Canvas Height="474" IsEnabled="{Binding TrainerIsSelected, Mode=OneWay}">
-                <GroupBox Header="Trainer" Height="225" Width="365" DataContext="{Binding CurrentTrainer}">
-                    <Canvas>
-                        <Label Content="Name:" Height="26" Canvas.Left="6" Canvas.Top="5"/>
-                        <Label Content="ID:" Height="26" Canvas.Left="6" Canvas.Top="31"/>
-                        <Label Content="AI:" Height="26" Canvas.Left="146" Canvas.Top="115"/>
-                        <Label Content="Music:" Height="26" Canvas.Left="146" Canvas.Top="88"/>
-                        <Label Content="Class:" Height="26" Canvas.Left="146" Canvas.Top="60"/>
-                        <TextBox Text="{Binding Name, UpdateSourceTrigger=PropertyChanged}" TextWrapping="NoWrap" Width="120" Canvas.Left="50" Canvas.Top="10" ToolTip="The display name of this trainer."/>
-                        <TextBox Text="{Binding Identifier, UpdateSourceTrigger=PropertyChanged}" TextWrapping="NoWrap" Width="120" Canvas.Left="50" Canvas.Top="35" ToolTip="The C identifier of this trainer." CharacterCasing="Upper"/>
-                        <Image x:Name="trainerPic" Source="{Binding Pic.FullPath, Mode=OneWay, Converter={StaticResource ImageConverter}}" Height="98" Width="121" Canvas.Left="6" Canvas.Top="62"/>
-                        <ComboBox Name="picList" SelectedValue="{Binding Pic}" ItemsSource="{Binding ViewModel.TrainerPics, ElementName=MainEditor}"
-                                  Width="120" Canvas.Left="6" Canvas.Top="170" ToolTip="The front picture used for this trainer."
-                                  DisplayMemberPath="Identifier"/>
-                        <ComboBox Name="classList" SelectedValue="{Binding Class}" ItemsSource="{Binding ViewModel.TrainerClasses, ElementName=MainEditor}" 
-                                  Width="127" Canvas.Left="195" Canvas.Top="62" ToolTip="The class of this trainer. (Used for display name and money calculation)"
-                                  DisplayMemberPath="Identifier"/>
-                        <Button Name="editClassButton" Content="" Canvas.Left="327" Canvas.Top="62" Width="22" Height="22" Click="editClassButton_Click" ToolTip="Edit the trainer class list.">
-                            <Button.Background>
-                                <ImageBrush ImageSource="/Editors/baseline_edit_black_18dp.png"/>
-                            </Button.Background>
-                        </Button>
-                        <ComboBox Name="musicList" SelectedValue="{Binding EncounterMusic}" ItemsSource="{Binding ViewModel.EncounterMusic, ElementName=MainEditor}" 
-                                  Width="154" Canvas.Left="195" Canvas.Top="90" Background="#FFE5E5E5" ToolTip="The encounter music when battling this trainer."/>
-                        <xctk:CheckComboBox x:Name="aiScripts"
-                             ItemsSource="{Binding ViewModel.TrainerAIScripts, ElementName=MainEditor}"
-                             SelectedItemsOverride="{Binding AIFlags, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                             Canvas.Left="195" Canvas.Top="118" Width="154" Background="#FFE5E5E5" BorderBrush="#FFACACAC" ToolTip="The AI flags used when battling." />
-                        <RadioButton IsChecked="{Binding IsMale}" Content="Male" Canvas.Left="166" Canvas.Top="151" Foreground="#FF323C9E" GroupName="Gender" ToolTip="If this trainer is Male."/>
-                        <RadioButton IsChecked="{Binding IsFemale, Mode=OneWay}" Content="Female" Canvas.Left="223" Canvas.Top="151" Foreground="#FFC930C9" GroupName="Gender" ToolTip="If this trainer is Female"/>
-                        <CheckBox IsChecked="{Binding DoubleBattle}" Content="Double Battle" Canvas.Left="166" Canvas.Top="171" ToolTip="If this trainer represents a double battle."/>
-                        <Button x:Name="editPicButton" Content="" Canvas.Left="131" Canvas.Top="170" Width="22" Height="22" Click="editPicButton_Click"  ToolTip="Edit the trainer picture list.">
-                            <Button.Background>
-                                <ImageBrush ImageSource="/Editors/baseline_edit_black_18dp.png"/>
-                            </Button.Background>
-                        </Button>
-                    </Canvas>
-                </GroupBox>
-                <GroupBox Header="Items" DataContext="{Binding CurrentTrainer}" Height="226" Canvas.Left="370" Width="212">
-                    <ListBox ItemsSource="{Binding Items}" HorizontalContentAlignment="Stretch" ToolTip="The items held by this trainer.">
-                        <ListBox.ItemTemplate>
-                            <DataTemplate DataType="Item">
-                                <ComboBox Name="trainerItem" SelectionChanged="trainerItem_SelectionChanged" 
-                                          SelectedItem="{Binding RelativeSource={RelativeSource Self}, Path=DataContext}"
-                                          ItemsSource="{Binding ViewModel.Items, ElementName=MainEditor}"
-                                          DisplayMemberPath="Name"/>
-                            </DataTemplate>
-                        </ListBox.ItemTemplate>
-                    </ListBox>
-                </GroupBox>
-                <GroupBox Header="Party" Height="260" Width="582" Canvas.Top="225">
-                    <Canvas Margin="0,0,0,-41">
-                        <DataGrid x:Name="partyMenu" ItemsSource="{Binding CurrentTrainer.Party.Pokemon}" AutoGenerateColumns="False" 
-                                  Height="173" Width="248" Canvas.Top="42" Canvas.Left="10" CanUserSortColumns="False" 
-                                  SelectionMode="Single" SelectionUnit="FullRow" CanUserAddRows="{Binding CanAddPokemon}"
-                                  CanUserDeleteRows="False" RowDetailsVisibilityMode="Collapsed" SelectionChanged="partyMenu_SelectionChanged" AllowDrop="True" 
-                                  Drop="partyMenu_Drop" PreviewMouseLeftButtonDown="partyMenu_PreviewMouseLeftButtonDown"
-                                  PreviewMouseMove="partyMenu_PreviewMouseMove" PreviewMouseUp="partyMenu_PreviewMouseUp" PreviewDragOver="partyMenu_PreviewDragOver"
-                                  MouseDoubleClick="partyMenu_MouseDoubleClick" PreviewKeyDown="partyMenu_PreviewKeyDown" ToolTip="The party of this trainer. (Drag to re-arrange. 'Delete' to remove)">
-                            <DataGrid.Columns>
-                                <DataGridTextColumn Width="2*" Binding="{Binding Species.Name}" IsReadOnly="True" Header="Species"/>
-                                <DataGridTextColumn Width="*" Binding="{Binding Level}" IsReadOnly="True" Header="Level"/>
-                            </DataGrid.Columns>
-                        </DataGrid>
-                        <Canvas IsEnabled="{Binding PokemonIsSelected, Mode=OneWay}">
-                            <Label Content="Species:" Height="26" Canvas.Left="272" Canvas.Top="10"/>
-                            <Label Content="Level:" Height="26" Canvas.Left="272" Canvas.Top="35"/>
-                            <Label Content="IVs:" Height="26" Canvas.Left="403" Canvas.Top="35"/>
-                            <Label Content="Item:" Height="26" Canvas.Left="272" Canvas.Top="66"/>
-                            <ComboBox SelectedItem="{Binding CurrentPokemon.Species}" 
-                                      ItemsSource="{Binding ViewModel.PokemonSpecies, ElementName=MainEditor}"
-                                      Canvas.Left="331" Canvas.Top="12" Width="118" ToolTip="The species of the selected Pokemon."
-                                      DisplayMemberPath="Name"/>
-                            <xctk:IntegerUpDown Value="{Binding CurrentPokemon.Level}" Minimum="1" Maximum="100" Canvas.Left="329" Canvas.Top="38" Width="60" ToolTip="The level of the selected Pokemon."/>
-                            <xctk:IntegerUpDown Value="{Binding CurrentPokemon.Iv}" Minimum="0" Maximum="255" Canvas.Left="436" Canvas.Top="38" Width="60" ToolTip="The IVs of the selected Pokemon."/>
-                            <ComboBox Name="pokemonItem" SelectedValue="{Binding CurrentPokemon.HeldItem}" ItemsSource="{Binding ViewModel.Items, ElementName=MainEditor}"
-                                      Canvas.Left="329" Canvas.Top="68" Width="120" ToolTip="The item held by the selected Pokemon."
-                                      DisplayMemberPath="Name"/>
-                            <GroupBox Header="Moves" Height="131" Width="288" Canvas.Left="272" Canvas.Top="97">
-                                <ListBox x:Name="moveListContainer" ItemsSource="{Binding CurrentPokemon.Moves}" HorizontalContentAlignment="Stretch" ToolTip="The moves known by the selected pokemon. (Moves must be selected for ALL pokemon)">
-                                    <ListBox.ItemTemplate>
-                                        <DataTemplate DataType="Move">
-                                            <ComboBox Name="partyMove" SelectionChanged="partyMove_SelectionChanged" 
-                                                      SelectedItem="{Binding RelativeSource={RelativeSource Self}, Path=DataContext}" 
-                                                      ItemsSource="{Binding ViewModel.Moves, ElementName=MainEditor}"
-                                                      DisplayMemberPath="Name"/>
-                                        </DataTemplate>
-                                    </ListBox.ItemTemplate>
-                                </ListBox>
-                            </GroupBox>
+        <DockPanel
+            Grid.RowSpan="2"
+            Margin="0,0,0,-14"
+            LastChildFill="True">
+            <ListBox
+                x:Name="trainerList"
+                Width="208"
+                Height="493"
+                DisplayMemberPath="Identifier"
+                ItemsSource="{Binding Trainers}"
+                SelectionChanged="trainerList_SelectionChanged" />
+            <Grid IsEnabled="{Binding TrainerIsSelected, Mode=OneWay}">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="*" />
+                    <RowDefinition Height="*" />
+                </Grid.RowDefinitions>
+                <Grid Grid.Row="0">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="220" />
+                    </Grid.ColumnDefinitions>
+                    <GroupBox
+                        Grid.Column="0"
+                        DataContext="{Binding CurrentTrainer}"
+                        Header="Trainer">
+                        <Canvas>
+                            <Label
+                                Canvas.Left="6"
+                                Canvas.Top="5"
+                                Height="26"
+                                Content="Name:" />
+                            <Label
+                                Canvas.Left="6"
+                                Canvas.Top="31"
+                                Height="26"
+                                Content="ID:" />
+                            <Label
+                                Canvas.Left="146"
+                                Canvas.Top="115"
+                                Height="26"
+                                Content="AI:" />
+                            <Label
+                                Canvas.Left="146"
+                                Canvas.Top="88"
+                                Height="26"
+                                Content="Music:" />
+                            <Label
+                                Canvas.Left="146"
+                                Canvas.Top="60"
+                                Height="26"
+                                Content="Class:" />
+                            <TextBox
+                                Canvas.Left="50"
+                                Canvas.Top="10"
+                                Width="208"
+                                Text="{Binding Name, UpdateSourceTrigger=PropertyChanged}"
+                                TextWrapping="NoWrap"
+                                ToolTip="The display name of this trainer." />
+                            <TextBox
+                                Canvas.Left="50"
+                                Canvas.Top="35"
+                                Width="208"
+                                CharacterCasing="Upper"
+                                Text="{Binding Identifier, UpdateSourceTrigger=PropertyChanged}"
+                                TextWrapping="NoWrap"
+                                ToolTip="The C identifier of this trainer." />
+                            <Image
+                                x:Name="trainerPic"
+                                Canvas.Left="6"
+                                Canvas.Top="62"
+                                Width="121"
+                                Height="98"
+                                Source="{Binding Pic.FullPath, Mode=OneWay, Converter={StaticResource ImageConverter}}" />
+                            <ComboBox
+                                Name="picList"
+                                Canvas.Left="6"
+                                Canvas.Top="170"
+                                Width="184"
+                                DisplayMemberPath="Identifier"
+                                ItemsSource="{Binding ViewModel.TrainerPics, ElementName=MainEditor}"
+                                SelectedValue="{Binding Pic}"
+                                ToolTip="The front picture used for this trainer." />
+                            <ComboBox
+                                Name="classList"
+                                Canvas.Left="195"
+                                Canvas.Top="62"
+                                Width="127"
+                                DisplayMemberPath="Identifier"
+                                ItemsSource="{Binding ViewModel.TrainerClasses, ElementName=MainEditor}"
+                                SelectedValue="{Binding Class}"
+                                ToolTip="The class of this trainer. (Used for display name and money calculation)" />
+                            <Button
+                                Name="editClassButton"
+                                Canvas.Left="327"
+                                Canvas.Top="62"
+                                Width="22"
+                                Height="22"
+                                Click="editClassButton_Click"
+                                Content=""
+                                ToolTip="Edit the trainer class list.">
+                                <Button.Background>
+                                    <ImageBrush ImageSource="/Editors/baseline_edit_black_18dp.png" />
+                                </Button.Background>
+                            </Button>
+                            <ComboBox
+                                Name="musicList"
+                                Canvas.Left="195"
+                                Canvas.Top="90"
+                                Width="154"
+                                Background="#FFE5E5E5"
+                                ItemsSource="{Binding ViewModel.EncounterMusic, ElementName=MainEditor}"
+                                SelectedValue="{Binding EncounterMusic}"
+                                ToolTip="The encounter music when battling this trainer." />
+                            <xctk:CheckComboBox
+                                x:Name="aiScripts"
+                                Canvas.Left="195"
+                                Canvas.Top="118"
+                                Width="154"
+                                Background="#FFE5E5E5"
+                                BorderBrush="#FFACACAC"
+                                ItemsSource="{Binding ViewModel.TrainerAIScripts, ElementName=MainEditor}"
+                                SelectedItemsOverride="{Binding AIFlags, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                ToolTip="The AI flags used when battling." />
+                            <RadioButton
+                                Canvas.Left="215"
+                                Canvas.Top="143"
+                                Content="Male"
+                                Foreground="#FF323C9E"
+                                GroupName="Gender"
+                                IsChecked="{Binding IsMale}"
+                                ToolTip="If this trainer is Male." />
+                            <RadioButton
+                                Canvas.Left="272"
+                                Canvas.Top="143"
+                                Content="Female"
+                                Foreground="#FFC930C9"
+                                GroupName="Gender"
+                                IsChecked="{Binding IsFemale, Mode=OneWay}"
+                                ToolTip="If this trainer is Female" />
+                            <CheckBox
+                                Canvas.Left="230"
+                                Canvas.Top="174"
+                                Content="Double Battle"
+                                IsChecked="{Binding DoubleBattle}"
+                                ToolTip="If this trainer represents a double battle." />
+                            <Button
+                                x:Name="editPicButton"
+                                Canvas.Left="195"
+                                Canvas.Top="171"
+                                Width="22"
+                                Height="22"
+                                Click="editPicButton_Click"
+                                Content=""
+                                ToolTip="Edit the trainer picture list.">
+                                <Button.Background>
+                                    <ImageBrush ImageSource="/Editors/baseline_edit_black_18dp.png" />
+                                </Button.Background>
+                            </Button>
                         </Canvas>
-                    </Canvas>
+                    </GroupBox>
+                    <GroupBox
+                        Grid.Column="1"
+                        DataContext="{Binding CurrentTrainer}"
+                        Header="Items">
+                        <ListBox
+                            HorizontalContentAlignment="Stretch"
+                            ItemsSource="{Binding Items}"
+                            ToolTip="The items held by this trainer.">
+                            <ListBox.ItemTemplate>
+                                <DataTemplate DataType="Item">
+                                    <ComboBox
+                                        Name="trainerItem"
+                                        DisplayMemberPath="Name"
+                                        ItemsSource="{Binding ViewModel.Items, ElementName=MainEditor}"
+                                        SelectedItem="{Binding RelativeSource={RelativeSource Self}, Path=DataContext}"
+                                        SelectionChanged="trainerItem_SelectionChanged" />
+                                </DataTemplate>
+                            </ListBox.ItemTemplate>
+                        </ListBox>
+                    </GroupBox>
+                </Grid>
+                <GroupBox
+                    Grid.Row="1"
+                    HorizontalAlignment="Stretch"
+                    VerticalAlignment="Stretch"
+                    Header="Party">
+                    <Grid HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+                        <TabControl
+                            x:Name="pokemonTabControl"
+                            IsEnabled="{Binding TrainerIsSelected}"
+                            ItemsSource="{Binding CurrentTrainer.Party.Pokemon}"
+                            PreviewKeyDown="partyMenu_PreviewKeyDown"
+                            SelectedItem="{Binding ViewModel.CurrentPokemon, ElementName=MainEditor}"
+                            ToolTip="The party of this trainer. (Drag to re-arrange. 'Ctrl+A' to add. 'Delete' to remove.)">
+                            <TabControl.Resources>
+                                <Style TargetType="TabItem">
+                                    <Setter Property="AllowDrop" Value="True" />
+                                    <EventSetter Event="PreviewMouseMove" Handler="partyMenu_PreviewMouseMove" />
+                                    <EventSetter Event="Drop" Handler="partyMenu_Drop" />
+                                    <EventSetter Event="PreviewKeyDown" Handler="partyMenu_PreviewKeyDown" />
+                                </Style>
+                            </TabControl.Resources>
+                            <TabControl.ItemTemplate>
+                                <DataTemplate>
+                                    <TextBlock Text="{Binding Species.Name}" />
+                                </DataTemplate>
+                            </TabControl.ItemTemplate>
+                            <TabControl.ContentTemplate>
+                                <DataTemplate>
+                                    <DockPanel>
+                                        <Canvas IsEnabled="{Binding PokemonIsSelected, Mode=OneWay}">
+                                            <Image
+                                                Canvas.Left="85"
+                                                Canvas.Top="5"
+                                                Width="96"
+                                                Height="96"
+                                                Source="{Binding Species.FullFrontPicPath, Mode=OneWay, Converter={StaticResource ImageConverter}}" />
+                                            <Label
+                                                Canvas.Left="0"
+                                                Canvas.Top="104"
+                                                Height="26"
+                                                Content="Species:" />
+                                            <Label
+                                                Canvas.Left="0"
+                                                Canvas.Top="137"
+                                                Height="26"
+                                                Content="Level:" />
+                                            <Label
+                                                Canvas.Left="131"
+                                                Canvas.Top="137"
+                                                Height="26"
+                                                Content="IVs:" />
+                                            <Label
+                                                Canvas.Left="0"
+                                                Canvas.Top="168"
+                                                Height="26"
+                                                Content="Item:" />
+                                            <ComboBox
+                                                Canvas.Left="59"
+                                                Canvas.Top="108"
+                                                Width="160"
+                                                DisplayMemberPath="Name"
+                                                ItemsSource="{Binding ViewModel.PokemonSpecies, ElementName=MainEditor}"
+                                                SelectedItem="{Binding Species}"
+                                                ToolTip="The species of the selected Pokemon."
+                                                VirtualizingPanel.IsVirtualizing="True"
+                                                VirtualizingPanel.VirtualizationMode="Recycling">
+                                                <ComboBox.ItemsPanel>
+                                                    <ItemsPanelTemplate>
+                                                        <VirtualizingStackPanel />
+                                                    </ItemsPanelTemplate>
+                                                </ComboBox.ItemsPanel>
+                                            </ComboBox>
+                                            <xctk:IntegerUpDown
+                                                Canvas.Left="59"
+                                                Canvas.Top="140"
+                                                Width="60"
+                                                Maximum="100"
+                                                Minimum="0"
+                                                ToolTip="The level of the selected Pokemon."
+                                                Value="{Binding Level}" />
+                                            <xctk:IntegerUpDown
+                                                Canvas.Left="160"
+                                                Canvas.Top="140"
+                                                Width="60"
+                                                Maximum="255"
+                                                Minimum="0"
+                                                ToolTip="The IVs of the selected Pokemon."
+                                                Value="{Binding Iv}" />
+                                            <ComboBox
+                                                Name="pokemonItem"
+                                                Canvas.Left="59"
+                                                Canvas.Top="170"
+                                                Width="160"
+                                                DisplayMemberPath="Name"
+                                                ItemsSource="{Binding ViewModel.Items, ElementName=MainEditor}"
+                                                SelectedValue="{Binding HeldItem}"
+                                                ToolTip="The item held by the selected Pokemon." />
+                                            <GroupBox
+                                                Canvas.Left="242"
+                                                Canvas.Top="30"
+                                                Width="288"
+                                                Height="131"
+                                                Header="Moves">
+                                                <ListBox
+                                                    x:Name="moveListContainer"
+                                                    HorizontalContentAlignment="Stretch"
+                                                    ItemsSource="{Binding Moves}"
+                                                    ToolTip="The moves known by the selected pokemon. (Moves must be selected for ALL pokemon)">
+                                                    <ListBox.ItemTemplate>
+                                                        <DataTemplate DataType="Move">
+                                                            <ComboBox
+                                                                Name="partyMove"
+                                                                DisplayMemberPath="Name"
+                                                                ItemsSource="{Binding ViewModel.Moves, ElementName=MainEditor}"
+                                                                SelectedItem="{Binding RelativeSource={RelativeSource Self}, Path=DataContext}"
+                                                                SelectionChanged="partyMove_SelectionChanged" />
+                                                        </DataTemplate>
+                                                    </ListBox.ItemTemplate>
+                                                </ListBox>
+                                            </GroupBox>
+                                        </Canvas>
+                                    </DockPanel>
+                                </DataTemplate>
+                            </TabControl.ContentTemplate>
+                        </TabControl>
+                    </Grid>
                 </GroupBox>
-            </Canvas>
+            </Grid>
         </DockPanel>
     </Grid>
 </UserControl>

@@ -62,8 +62,9 @@ namespace DecompEditor.Views {
       get => currentTrainer;
       set {
         Set(ref currentTrainer, value);
+        if (value != null)
+          CurrentPokemon = value.Party.Pokemon[0];
         RaisePropertyChanged("TrainerIsSelected");
-        RaisePropertyChanged("CanAddPokemon");
       }
     }
     public bool TrainerIsSelected => currentTrainer != null;
@@ -80,6 +81,5 @@ namespace DecompEditor.Views {
       }
     }
     public bool PokemonIsSelected => currentPokemon != null;
-    public bool CanAddPokemon => CurrentTrainer != null ? CurrentTrainer.Party.Pokemon.Count != 6 : false;
   }
 }

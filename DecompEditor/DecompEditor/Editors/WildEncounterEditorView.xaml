@@ -140,8 +140,8 @@
                                                             <DataGridTemplateColumn MinWidth="90" Header="Mid-Level">
                                                                 <DataGridTemplateColumn.CellTemplate>
                                                                     <DataTemplate>
-                                                                        <xctk:IntegerUpDown Value="{Binding MidLevel, UpdateSourceTrigger=PropertyChanged}" Minimum="1" Maximum="100"
-                                                                                            ToolTip="The median level of this occurrence."
+                                                                        <xctk:IntegerUpDown Value="{Binding MidLevel, UpdateSourceTrigger=PropertyChanged}" Minimum="0" Maximum="100"
+                                                                                            ToolTip="The median level of this occurrence. Set to 0 to auto-scale to the player's current party."
                                                                                             PreviewKeyDown="MidLevel_PreviewKeyDown"/>
                                                                     </DataTemplate>
                                                                 </DataGridTemplateColumn.CellTemplate>
@@ -149,7 +149,7 @@
                                                             <DataGridTemplateColumn MinWidth="90" Header="Level Range">
                                                                 <DataGridTemplateColumn.CellTemplate>
                                                                     <DataTemplate>
-                                                                        <xctk:IntegerUpDown Value="{Binding LevelRange, UpdateSourceTrigger=PropertyChanged}" Minimum="0" Maximum="8"
+                                                                        <xctk:IntegerUpDown Value="{Binding LevelRange, UpdateSourceTrigger=PropertyChanged}" Minimum="0" Maximum="16"
                                                                                             ToolTip="The level range of this occurrence."
                                                                                             PreviewKeyDown="LevelRange_PreviewKeyDown"/>
                                                                     </DataTemplate>

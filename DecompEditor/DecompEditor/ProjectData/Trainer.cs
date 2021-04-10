@@ -34,7 +34,7 @@ namespace DecompEditor {
       return new Pokemon {
         HeldItem = Project.Instance.Items.getFromId("NONE"),
         Moves = new ObservableCollection<Move>(Enumerable.Repeat(Project.Instance.Moves.getFromId("MOVE_NONE"), 4)),
-        Species = Project.Instance.Species.getFromId("SPECIES_NONE")
+        Species = Project.Instance.Species.getFromId("SPECIES_BULBASAUR")
       };
     }
   }
@@ -141,6 +141,8 @@ namespace DecompEditor {
     private string identifier;
     private string name;
     private int moneyFactor = 5;
+    private int ivs;
+    private Item pokeball;
 
     /// <summary>
     /// The C identifier of the class.
@@ -163,6 +165,14 @@ namespace DecompEditor {
     /// The money factor of the trainer class.
     /// </summary>
     public int MoneyFactor { get => moneyFactor; set => Set(ref moneyFactor, value); }
+    /// <summary>
+    /// The base IVs of the trainer class.
+    /// </summary>
+    public int IVs { get => ivs; set => Set(ref ivs, value); }
+    /// <summary>
+    /// The pokeball thrown out for this trainer class.
+    /// </summary>
+    public Item Pokeball { get => pokeball; set => Set(ref pokeball, value); }
   }
   /// <summary>
   /// This class represents a specific trainer front pic.
@@ -298,16 +308,17 @@ namespace DecompEditor {
     public class JSONDatabase {
       public JSONDatabase() { }
       public JSONDatabase(TrainerDatabase database) {
-        Classes = database.Classes.ToArray();
+        Classes = database.Classes.Select(trainerClass => new JSONTrainerClass(trainerClass)).ToArray();
         FrontPics = database.FrontPics.Select(pic => new JSONTrainerPic(pic)).ToArray();
         Trainers = database.Trainers.Select(trainer => new JSONTrainer(trainer)).ToArray();
       }
 
       public void deserializeInto(TrainerDatabase database) {
         Dictionary<string, TrainerClass> idToClass = new Dictionary<string, TrainerClass>();
-        foreach (var @class in Classes) {
-          database.Classes.Add(@class);
-          idToClass.Add(@class.Identifier, @class);
+        foreach (var trainerClass in Classes) {
+          TrainerClass deserializedTrainerClass = trainerClass.deserialize();
+          database.Classes.Add(deserializedTrainerClass);
+          idToClass.Add(trainerClass.Identifier, deserializedTrainerClass);
         }
         Dictionary<string, TrainerPic> idToPic = new Dictionary<string, TrainerPic>();
         foreach (var pic in FrontPics) {
@@ -425,7 +436,32 @@ namespace DecompEditor {
         public int CoordYOffset { get; set; }
         public int UncompressedSize { get; set; }
       }
-      public TrainerClass[] Classes { get; set; }
+      public class JSONTrainerClass {
+        public JSONTrainerClass() { }
+        public JSONTrainerClass(TrainerClass trainerClass) {
+          Identifier = trainerClass.Identifier;
+          Name = trainerClass.Name;
+          MoneyFactor = trainerClass.MoneyFactor;
+          IVs = trainerClass.IVs;
+          Pokeball = trainerClass.Pokeball.Identifier;
+        }
+        public TrainerClass deserialize() {
+          return new TrainerClass() {
+            Identifier = Identifier,
+            Name = Name,
+            MoneyFactor = MoneyFactor,
+            IVs = IVs,
+            Pokeball = Project.Instance.Items.getFromId(Pokeball)
+          };
+        }
+
+        public string Identifier { get; set; }
+        public string Name { get; set; }
+        public int MoneyFactor { get; set; }
+        public int IVs { get; set; }
+        public string Pokeball { get; set; }
+      }
+      public JSONTrainerClass[] Classes { get; set; }
       public JSONTrainerPic[] FrontPics { get; set; }
       public JSONTrainer[] Trainers { get; set; }
     }

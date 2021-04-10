@@ -43,8 +43,8 @@ namespace DecompEditor.Editors {
     private void addOccurrenceButton_Click(object sender, RoutedEventArgs e) {
       WildEncounterPokemon pokemon = (sender as Button).DataContext as WildEncounterPokemon;
       pokemon.Occurrences.Add(new WildEncounterOccurrence() {
-        MidLevel = 1,
-        LevelRange = 1,
+        MidLevel = 0,
+        LevelRange = 2,
         EncounterRate = 1,
         Time = "MORNING"
       });

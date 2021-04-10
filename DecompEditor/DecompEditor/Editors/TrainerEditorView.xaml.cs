@@ -29,8 +29,6 @@ namespace DecompEditor.Editors {
 
     private void trainerList_SelectionChanged(object sender, SelectionChangedEventArgs evt) => ViewModel.CurrentTrainer = trainerList.SelectedItem as Trainer;
 
-    private void partyMenu_SelectionChanged(object sender, SelectionChangedEventArgs e) => ViewModel.CurrentPokemon = partyMenu.SelectedItem as Pokemon;
-
     private void trainerItem_SelectionChanged(object sender, SelectionChangedEventArgs e) {
       if (ViewModel.CurrentTrainer == null)
         return;
@@ -58,80 +56,47 @@ namespace DecompEditor.Editors {
       };
       window.ShowDialog();
     }
-
-    private Point? partyMenuDragstartPoint;
-    private void partyMenu_PreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e) => partyMenuDragstartPoint = e.GetPosition(null);
     private void partyMenu_PreviewMouseMove(object sender, MouseEventArgs e) {
-      // Check that a drag is happening from the party menu.
-      if (partyMenuDragstartPoint == null || sender != partyMenu)
+      if (!(e.Source is TabItem tabItem))
         return;
-
-      // Get the current mouse position
-      Point mousePos = e.GetPosition(null);
-      Vector diff = partyMenuDragstartPoint.Value - mousePos;
-      // test for the minimum displacement to begin the drag
-      if (!(e.LeftButton == MouseButtonState.Pressed &&
-          (Math.Abs(diff.X) > SystemParameters.MinimumHorizontalDragDistance ||
-          Math.Abs(diff.Y) > SystemParameters.MinimumVerticalDragDistance))) {
-        return;
-      }
-
-      // Get the pokemon from the row being dragged.
-      DataGridRow dataGridRow = ((DependencyObject)e.OriginalSource).FindVisualParent<DataGridRow>();
-      if (dataGridRow == null)
-        return;
-      int rowIndex = dataGridRow.GetIndex();
-
-      // Initialize the drag & drop operation.
-      var dataObj = new DataObject("origIndex", rowIndex);
-      dataObj.SetData("DragSource", sender);
-      DragDrop.DoDragDrop(partyMenu, dataObj, DragDropEffects.Copy);
-      partyMenuDragstartPoint = null;
+      if (Mouse.PrimaryDevice.LeftButton == MouseButtonState.Pressed)
+        DragDrop.DoDragDrop(tabItem, tabItem, DragDropEffects.All);
     }
-
-    private void partyMenu_PreviewMouseUp(object sender, MouseButtonEventArgs e) => partyMenuDragstartPoint = null;
 
     private void partyMenu_Drop(object sender, DragEventArgs e) {
-      var dg = sender as DataGrid;
-      if (dg == null)
+      if (!(e.Source is TabItem tabItemTarget))
         return;
-      DataGridRow newGridRow = ((DependencyObject)e.OriginalSource).FindVisualParent<DataGridRow>();
-      if (newGridRow == null)
+      if (!(e.Data.GetData(typeof(TabItem)) is TabItem tabItemSource))
         return;
-      int newRowIndex = newGridRow.GetIndex();
+      if (tabItemTarget.Equals(tabItemSource))
+        return;
 
-      var dgSrc = e.Data.GetData("DragSource") as DataGrid;
-      object origIndexObj = e.Data.GetData("origIndex");
-      if (dgSrc == null || origIndexObj == null || (int)origIndexObj == newRowIndex)
-        return;
-      ViewModel.CurrentTrainer.Party.Pokemon.Move((int)origIndexObj, newGridRow.GetIndex());
-    }
-
-    private void partyMenu_PreviewDragOver(object sender, DragEventArgs e) {
-      // Don't allow drag if the trainer only has one pokemon.
-      if (ViewModel.CurrentTrainer.Party.Pokemon.Count == 1)
-        e.Effects = DragDropEffects.None;
-    }
-
-    private void partyMenu_MouseDoubleClick(object sender, MouseButtonEventArgs e) {
-      DataGridRow clickedRow = ((DependencyObject)e.OriginalSource).FindVisualParent<DataGridRow>();
-      if (clickedRow == null || !clickedRow.IsNewItem)
-        return;
-      ViewModel.CurrentTrainer.Party.Pokemon.Add(Pokemon.createDefault());
-      ViewModel.RaisePropertyChanged("CanAddPokemon");
+      ObservableCollection<Pokemon> pokemon = ViewModel.CurrentTrainer.Party.Pokemon;
+      int sourceIndex = pokemon.IndexOf(tabItemSource.Content as Pokemon);
+      int targetIndex = pokemon.IndexOf(tabItemTarget.Content as Pokemon);
+      ViewModel.CurrentTrainer.Party.Pokemon.Move(sourceIndex, targetIndex);
+      ViewModel.CurrentPokemon = pokemon[targetIndex];
     }
 
     private void partyMenu_PreviewKeyDown(object sender, KeyEventArgs e) {
-      DataGridRow clickedRow = ((DependencyObject)e.OriginalSource).FindVisualParent<DataGridRow>();
-      if (e.Key != Key.Delete || clickedRow == null || clickedRow.IsNewItem)
-        return;
       ObservableCollection<Pokemon> pokemon = ViewModel.CurrentTrainer.Party.Pokemon;
-      if (pokemon.Count == 1)
+      if (e.Key == Key.Delete) {
+        if (pokemon.Count == 1)
+          return;
+
+        int removeIndex = pokemon.IndexOf(ViewModel.CurrentPokemon);
+        pokemon.RemoveAt(removeIndex);
+        ViewModel.CurrentPokemon = pokemon[Math.Max(0, removeIndex - 1)];
+      }
+      if (e.Key == Key.A && (Keyboard.IsKeyDown(Key.LeftCtrl) || Keyboard.IsKeyDown(Key.RightCtrl))) {
+        if (pokemon.Count == 6)
+          return;
+
+        int insertIndex = pokemon.IndexOf(ViewModel.CurrentPokemon) + 1;
+        pokemon.Insert(insertIndex, Pokemon.createDefault());
+        ViewModel.CurrentPokemon = pokemon[insertIndex];
         return;
-      int removeIndex = clickedRow.GetIndex();
-      pokemon.RemoveAt(removeIndex);
-      ViewModel.RaisePropertyChanged("CanAddPokemon");
-      partyMenu.SelectedIndex = Math.Max(0, removeIndex - 1);
+      }
     }
 
     private void editPicButton_Click(object sender, RoutedEventArgs e) {
