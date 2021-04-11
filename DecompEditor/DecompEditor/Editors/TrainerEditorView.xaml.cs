@@ -106,5 +106,20 @@ namespace DecompEditor.Editors {
       };
       window.ShowDialog();
     }
+
+    private void generatePartyLevelsButton_Click(object sender, RoutedEventArgs e) {
+      MessageBoxResult result = WPFCustomMessageBox.CustomMessageBox.ShowYesNoCancel("Which section of the game segment should the trainer be generated using?", "Generate Trainer Data from Game Segment", "Early", "Middle", "Late");
+      switch (result) {
+        case MessageBoxResult.Yes:
+          ViewModel.CurrentTrainer.GameSegment.generateDataForTrainer(ViewModel.CurrentTrainer, DifficultyGameSegment.Section.Early);
+          break;
+        case MessageBoxResult.No:
+          ViewModel.CurrentTrainer.GameSegment.generateDataForTrainer(ViewModel.CurrentTrainer, DifficultyGameSegment.Section.Middle);
+          break;
+        case MessageBoxResult.Cancel:
+          ViewModel.CurrentTrainer.GameSegment.generateDataForTrainer(ViewModel.CurrentTrainer, DifficultyGameSegment.Section.Late);
+          break;
+      }
+    }
   }
 }

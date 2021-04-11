@@ -55,6 +55,12 @@ namespace DecompEditor.Views {
     public IEnumerable<TrainerPic> TrainerPics => Project.Instance.Trainers.FrontPics;
 
     /// <summary>
+    /// The set of game segments within the project.
+    /// </summary>
+    public IEnumerable<DifficultyGameSegment> GameSegments => 
+      Project.Instance.Difficulty.GameSegments.Concat(Enumerable.Repeat(DifficultyGameSegment.UnknownSegment, 1));
+
+    /// <summary>
     /// The currently selected trainer.
     /// </summary>
     Trainer currentTrainer;

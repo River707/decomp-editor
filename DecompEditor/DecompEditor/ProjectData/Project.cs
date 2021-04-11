@@ -14,6 +14,7 @@ namespace DecompEditor {
     private string projectDir;
     internal AdventureDatabase Adventures { get; } = new AdventureDatabase();
     internal BattleAIDatabase BattleAI { get; } = new BattleAIDatabase();
+    internal DifficultyDatabase Difficulty { get; } = new DifficultyDatabase();
     internal EventObjectDatabase EventObjects { get; } = new EventObjectDatabase();
     internal ItemDatabase Items { get; } = new ItemDatabase();
     internal MoveDatabase Moves { get; } = new MoveDatabase();
@@ -43,7 +44,7 @@ namespace DecompEditor {
     => System.IO.Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "DecompEditor", "decompEditor.log");
 
     private Project() {
-      registerDatabases(Adventures, BattleAI, EventObjects, Items, Moves, Species,
+      registerDatabases(Adventures, BattleAI, Difficulty, EventObjects, Items, Moves, Species,
                         TrainerEncounterMusic, Trainers, WildEncounters);
     }
     void registerDatabases(params DatabaseBase[] databases) => this.databases.AddRange(databases);

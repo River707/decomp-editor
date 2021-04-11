@@ -68,6 +68,7 @@ namespace DecompEditor {
     private bool isMale = true;
     private ObservableCollection<CDefine> aiFlags;
     private TrainerParty party;
+    private DifficultyGameSegment gameSegment;
 
     /// <summary>
     /// The C identifier of the trainer.
@@ -128,6 +129,11 @@ namespace DecompEditor {
     /// The party of Pokemon used by this trainer.
     /// </summary>
     public TrainerParty Party { get => party; set => SetAndTrack(ref party, value); }
+
+    /// <summary>
+    /// The difficulty segment of this trainer.
+    /// </summary>
+    public DifficultyGameSegment GameSegment { get => gameSegment; set => Set(ref gameSegment, value); }
 
     public Trainer() {
       AIFlags = new ObservableCollection<CDefine>();
@@ -380,6 +386,7 @@ namespace DecompEditor {
             HasMoves = partyHasMoves ? new bool?(true) : null,
             Pokemon = trainer.Party.Pokemon.Select(pokemon => new JSONPokemon(pokemon, partyHasItems, partyHasMoves)).ToArray()
           };
+          GameSegment = trainer.GameSegment.Index; 
         }
         public Trainer deserialize(Dictionary<string, TrainerClass> idToClass,
                                    Dictionary<string, TrainerPic> idToPic) {
@@ -395,7 +402,8 @@ namespace DecompEditor {
             AIFlags = new ObservableCollection<CDefine>(AIFlags.Select(flag => Project.Instance.BattleAI.getFromId("AI_SCRIPT_" + flag))),
             Party = new TrainerParty() {
               Pokemon = new ObservableCollection<Pokemon>(Party.Pokemon.Select(pokemon => pokemon.deserialize()))
-            }
+            },
+            GameSegment = GameSegment == null ? DifficultyGameSegment.UnknownSegment : Project.Instance.Difficulty.GameSegments[GameSegment.Value]
           };
         }
 
@@ -409,6 +417,7 @@ namespace DecompEditor {
         public bool? IsMale { get; set; } = false;
         public string[] AIFlags { get; set; }
         public JSONTrainerParty Party { get; set; }
+        public int? GameSegment { get; set; } = null;
       }
       public class JSONTrainerPic {
         public JSONTrainerPic() { }

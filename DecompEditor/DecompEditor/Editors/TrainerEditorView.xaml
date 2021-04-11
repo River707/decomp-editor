@@ -165,7 +165,7 @@
                             <Button
                                 x:Name="editPicButton"
                                 Canvas.Left="195"
-                                Canvas.Top="171"
+                                Canvas.Top="170"
                                 Width="22"
                                 Height="22"
                                 Click="editPicButton_Click"
@@ -173,6 +173,33 @@
                                 ToolTip="Edit the trainer picture list.">
                                 <Button.Background>
                                     <ImageBrush ImageSource="/Editors/baseline_edit_black_18dp.png" />
+                                </Button.Background>
+                            </Button>
+                            <Label
+                                Canvas.Left="10"
+                                Canvas.Top="197"
+                                Height="26"
+                                Content="Game Segment:" />
+                            <ComboBox
+                                Canvas.Left="106"
+                                Canvas.Top="199"
+                                Width="111"
+                                Background="#FFE5E5E5"
+                                ItemsSource="{Binding ViewModel.GameSegments, ElementName=MainEditor}"
+                                SelectedValue="{Binding GameSegment}"
+                                ToolTip="The game segment of this trainer." />
+                            <Button
+                                x:Name="generatePartyLevelsButton"
+                                Canvas.Left="222"
+                                Canvas.Top="199"
+                                Width="22"
+                                Height="22"
+                                Click="generatePartyLevelsButton_Click"
+                                Content=""
+                                IsEnabled="{Binding GameSegment.IsKnown}"
+                                ToolTip="Randomly generate the levels of this trainer's pokemon, using the current game segment.">
+                                <Button.Background>
+                                    <ImageBrush ImageSource="/Editors/baseline_quickrefresh_black_18dp.png" />
                                 </Button.Background>
                             </Button>
                         </Canvas>
