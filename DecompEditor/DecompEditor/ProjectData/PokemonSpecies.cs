@@ -20,7 +20,14 @@ namespace DecompEditor {
     /// <summary>
     /// The full file path of the front picture.
     /// </summary>
-    public string FullFrontPicPath => Path.Combine(Project.Instance.ProjectDir, "graphics", "pokemon", Name, "front.png");
+    public string FullFrontPicPath {
+      get {
+        string path = Path.Combine(Project.Instance.ProjectDir, "graphics", "pokemon", Name, "front.png");
+        if (!File.Exists(path))
+          path = Path.Combine(Project.Instance.ProjectDir, "graphics/pokemon/question_mark/circled/front.png");
+        return path;
+      }
+    }
   }
   public class PokemonSpeciesDatabase : DatabaseBase {
     readonly OrderedDictionary<string, PokemonSpecies> enumToSpecies = new OrderedDictionary<string, PokemonSpecies>();
