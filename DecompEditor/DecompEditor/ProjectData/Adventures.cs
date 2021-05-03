@@ -406,7 +406,7 @@ namespace DecompEditor.ProjectData {
         public string Identifier { get; set; }
         public string InProgressDescription { get; set; }
         public string FailureDescription { get; set; } = "";
-        public string CompletedDescription { get; set; }
+        public string CompletedDescription { get; set; } = "";
         public string PointOfContact { get; set; } = "";
         public string PointOfContactLocalIdentifier { get; set; } = "";
         public string PointOfContactGraphicsIdentifier { get; set; } = "";
@@ -419,8 +419,8 @@ namespace DecompEditor.ProjectData {
           Title = task.Title;
           Identifier = task.Identifier;
           InProgressDescription = task.InProgressDescription;
-          FailureDescription = task.FailureDescription;
-          CompletedDescription = task.CompletedDescription;
+          FailureDescription = task.FailureDescription.Length == 0 ? null : task.FailureDescription;
+          CompletedDescription = task.CompletedDescription.Length == 0 ? null : task.CompletedDescription;
           PointOfContact = task.PointOfContact.Length == 0 ? null : task.PointOfContact;
           PointOfContactLocalIdentifier = task.PointOfContactLocalIdentifier.Length == 0 ? null : task.PointOfContactLocalIdentifier;
           PointOfContactGraphicsIdentifier = task.PointOfContactGraphicsIdentifier.Length == 0 ? null : task.PointOfContactGraphicsIdentifier;
